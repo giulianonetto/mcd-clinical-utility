@@ -1,2 +1,2 @@
 # Clinical utility of the Galleri test for multi-cancer early detection in symptomatic patients: a Bayesian decision analysis of the SYMPLIFY study
-This repository assesses the clinical utility of the Galleri test for multi-cancer early detection in symptomatic patients referred for cancer investigation, using data from the [SYMPLIFY study](https://doi.org/10.1016/S1470-2045(23)00277-2) prospective cohort study.
+This repository assesses the clinical utility of the Galleri test for multi-cancer early detection in symptomatic patients referred for cancer investigation, using data from the [SYMPLIFY cohort study](https://doi.org/10.1016/S1470-2045(23)00277-2).
