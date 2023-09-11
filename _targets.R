@@ -1,30 +1,27 @@
-# Created by use_targets().
-# Follow the comments below to fill in this target script.
-# Then follow the manual to check and run the pipeline:
-#   https://books.ropensci.org/targets/walkthrough.html#inspect-the-pipeline # nolint
-
-# Load packages required to define the pipeline:
 library(targets)
-# library(tarchetypes) # Load other packages as needed. # nolint
 
-# Set target options:
 tar_option_set(
   packages = c(
     "tidyverse",
-    "bayesDCA",
-    "withr",
     "patchwork"
   )
 )
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-# source("other_functions.R") # Source other scripts as needed. # nolint
 
-# Replace the target list below with your own:
+# Target list:
 list(
   tar_target(
-    name = obt_dca,
-    command = run_obt_dca()
-    #   format = "feather" # efficient storage of large data frames # nolint
+    name = pathways_dca_results,
+    command = run_symplify_pathways_dca(
+      symplify_pathways_data = here::here("data/symplify-pathways.tsv")
+    )
+  ),
+  tar_target(
+    name = pathways_figures,
+    command = create_pathways_figures(
+      pathways_dca_results = pathways_dca_results,
+      output_dir = here::here("output/pathways")
+    )
   )
 )

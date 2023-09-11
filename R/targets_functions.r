@@ -1,5 +1,4 @@
-run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir) {
-    dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+run_symplify_pathways_dca <- function(symplify_pathways_data) {
     extracted_data <- readr::read_tsv(symplify_pathways_data, show_col_types = FALSE)
     extracted_data <- map_df(
         seq_len(nrow(extracted_data)),
@@ -14,7 +13,17 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir) {
     ) %>%
         dplyr::rename(pathway := name)
 
-    pathways <- unique(extracted_data$pathway)
+    .colors <- c(
+        "Overall" = "#1B9E77",
+        "Gynaecology" = "#8d36f0",
+        "Lower GI" = "#0e4674",
+        "Lung" = "#1c87df",
+        "RDC" = "#E7298A",
+        "Upper GI" = "#D95F02"
+    )
+    pathways <- names(.colors)
+    pathways_dca_results <- vector("list", length = length(pathways))
+    names(pathways_dca_results) <- pathways
     for (.pathway in pathways) {
         msg <- stringr::str_glue(
             "Analyzing the {.pathway} pathway..."
@@ -34,35 +43,28 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir) {
             thresholds = seq(0, ceiling(extracted_data_pathway$p * 1.2) / 100, length = 100),
             n_draws = 2e4
         )
-        .colors <- list(
-            mced_test = dplyr::case_match(
-                .pathway,
-                "Overall" ~ "#1B9E77",
-                "Gynaecology" ~ "#8d36f0",
-                "Lower GI" ~ "#0e4674",
-                "Lung" ~ "#1c87df",
-                "RDC" ~ "#E7298A",
-                "Upper GI" ~ "#D95F02"
-            )
-        )
 
-        dca_untreated <- plot_net_benefit_opt_out(fit, .title = NULL, .colors = .colors$mced_test)
+        .label <- stringr::str_glue("{.pathway} pathway")
+        .color <- .colors[[.pathway]]
+        # TODO: prevalence vertical lines
+        dca_treated <- plot_net_benefit_treated(bdca_fit = fit, .color = .color, .label = .label)
+        dca_untreated <- plot_net_benefit_untreated(bdca_fit = fit, .color = .color, .label = .label)
+        p_useful <- plot_prob_useful(bdca_fit = fit, .color = .color, .label = .label)
+        evpi <- plot_evpi(bdca_fit = fit, .color = .color, .label = .label)
 
-        .labels <- list(mced_test = stringr::str_glue("Gallery test ({.pathway} pathway)"))
-        p1 <- bayesDCA::compare_dca(
-            fit,
-            .evpi = TRUE,
-            colors = .colors,
-            labels = .labels
-        ) # TODO: add prevalence line
-        .pathway <- stringr::str_replace_all(.pathway, " ", "-")
-        file_name_p1 <- stringr::str_glue(
-            "pathway-dca-{.pathway}.png"
-        )
-        ggplot2::ggsave(
-            file.path(output_dir, file_name_p1),
-            width = 12,
-            height = 7.5
+        pathways_dca_results[[.pathway]] <- list(
+            dca_treated = dca_treated,
+            dca_untreated = dca_untreated,
+            p_useful = p_useful,
+            evpi = evpi
         )
     }
+
+    return(pathways_dca_results)
+}
+
+
+create_pathways_figures <- function(pathways_dca_results, output_dir) {
+    dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+    # ggplot2::ggsave()
 }
