@@ -1,7 +1,11 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-compute_nb_untreated|function|8d8c0f4c23807228|||||||||||||||
+compute_nb_untreated|function|c4b4b032458b421b|||||||||||||||
+create_pathways_figures|function|7a379448b5e5aa6c|||||||||||||||
 generate_data_from_counts|function|fd2ca9fb6fb8fe1b|||||||||||||||
-pathways_dca|stem|988cc8961cd51337|a7cbc8c78d86bafc|4239643c05d02dfa|-703887216||t19611.8748398701s|a96c250e4b19e03e|54|rds|local|vector|||21.71||
-plot_net_benefit_opt_out|function|0f9e7a9a042bfdee|||||||||||||||
+pathways_dca_results|stem|d733a528405e3206|2d3d4fa7b538a914|f4951e4465f06b7e|986223820||t19613.8296010831s|ba8b5c7b9c1e2fa3|87724421|rds|local|vector|||20.724||
+plot_evpi|function|d96e64076d1a0876|||||||||||||||
+plot_net_benefit_treated|function|d0645d0af4c64ffe|||||||||||||||
+plot_net_benefit_untreated|function|3ea7fb9ae89119f2|||||||||||||||
+plot_prob_useful|function|5ef9532e71836a7d|||||||||||||||
 process_extracted_data|function|d77633c2269f1158|||||||||||||||
-run_symplify_pathways_dca|function|f3d461af1b51f1a8|||||||||||||||
+run_symplify_pathways_dca|function|0decf9d94b6aec44|||||||||||||||

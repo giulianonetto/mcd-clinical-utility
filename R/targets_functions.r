@@ -1,4 +1,5 @@
-run_symplify_pathways_dca <- function(symplify_pathways_data) {
+run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draws = 4000) {
+    dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
     extracted_data <- readr::read_tsv(symplify_pathways_data, show_col_types = FALSE)
     extracted_data <- map_df(
         seq_len(nrow(extracted_data)),
@@ -41,7 +42,7 @@ run_symplify_pathways_dca <- function(symplify_pathways_data) {
         fit <- bayesDCA::dca(
             dca_data,
             thresholds = seq(0, ceiling(extracted_data_pathway$p * 1.2) / 100, length = 100),
-            n_draws = 2e4
+            n_draws = n_draws
         )
 
         .label <- stringr::str_glue("{.pathway} pathway")
@@ -60,11 +61,10 @@ run_symplify_pathways_dca <- function(symplify_pathways_data) {
         )
     }
 
-    return(pathways_dca_results)
-}
-
-
-create_pathways_figures <- function(pathways_dca_results, output_dir) {
-    dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
-    # ggplot2::ggsave()
+    logger::log_info("Creating final pathways figures")
+    create_pathways_figures(
+        pathways_dca_results = pathways_dca_results
+    )
+    logger::log_info("Figures successfully created!")
+    return(pathways_dca_results[[1]][[1]])
 }

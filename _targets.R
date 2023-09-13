@@ -1,4 +1,5 @@
 library(targets)
+library(here)
 
 tar_option_set(
   packages = c(
@@ -14,14 +15,9 @@ list(
   tar_target(
     name = pathways_dca_results,
     command = run_symplify_pathways_dca(
-      symplify_pathways_data = here::here("data/symplify-pathways.tsv")
-    )
-  ),
-  tar_target(
-    name = pathways_figures,
-    command = create_pathways_figures(
-      pathways_dca_results = pathways_dca_results,
-      output_dir = here::here("output/pathways")
+      symplify_pathways_data = here("data/symplify-pathways.tsv"),
+      output_dir = here::here("output/testing"),
+      n_draws = 2e4
     )
   )
 )
