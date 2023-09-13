@@ -45,7 +45,7 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
             n_draws = n_draws
         )
 
-        .label <- stringr::str_glue("{.pathway} pathway")
+        .label <- stringr::str_glue("MCED test ({.pathway})")
         .color <- .colors[[.pathway]]
         # TODO: prevalence vertical lines
         dca_treated <- plot_net_benefit_treated(fit = .fit, .color = .color, .label = .label)
