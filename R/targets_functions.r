@@ -39,7 +39,7 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
             fp = extracted_data_pathway$fp,
             fn = extracted_data_pathway$fn
         )
-        fit <- bayesDCA::dca(
+        .fit <- bayesDCA::dca(
             dca_data,
             thresholds = seq(0, ceiling(extracted_data_pathway$p * 1.2) / 100, length = 100),
             n_draws = n_draws
@@ -48,10 +48,10 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         .label <- stringr::str_glue("{.pathway} pathway")
         .color <- .colors[[.pathway]]
         # TODO: prevalence vertical lines
-        dca_treated <- plot_net_benefit_treated(bdca_fit = fit, .color = .color, .label = .label)
-        dca_untreated <- plot_net_benefit_untreated(bdca_fit = fit, .color = .color, .label = .label)
-        p_useful <- plot_prob_useful(bdca_fit = fit, .color = .color, .label = .label)
-        evpi <- plot_evpi(bdca_fit = fit, .color = .color, .label = .label)
+        dca_treated <- plot_net_benefit_treated(fit = .fit, .color = .color, .label = .label)
+        dca_untreated <- plot_net_benefit_untreated(fit = .fit, .color = .color, .label = .label)
+        p_useful <- plot_prob_useful(fit = .fit, .color = .color, .label = .label)
+        evpi <- plot_evpi(fit = .fit, .color = .color, .label = .label)
 
         pathways_dca_results[[.pathway]] <- list(
             dca_treated = dca_treated,

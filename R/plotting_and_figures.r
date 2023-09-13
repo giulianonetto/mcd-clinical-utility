@@ -1,6 +1,6 @@
-plot_net_benefit_treated <- function(bdca_fit, .color, .label) {
+plot_net_benefit_treated <- function(fit, .color, .label) {
     bayesDCA:::plot.BayesDCA(
-        bdca_fit,
+        fit,
         colors = list(mced_test = .color),
         labels = list(mced_test = .label)
     ) +
@@ -8,8 +8,8 @@ plot_net_benefit_treated <- function(bdca_fit, .color, .label) {
         ggplot2::theme(legend.position = c(.85, .85))
 }
 
-plot_net_benefit_untreated <- function(bdca_fit, .color, .label) {
-    plot_df <- compute_nb_untreated(bdca_fit)
+plot_net_benefit_untreated <- function(fit, .color, .label) {
+    plot_df <- compute_nb_untreated(fit)
 
     .colors <- c(.color, "gray40", "black")
     names(.colors) <- c(.label, "Refer all", "Refer none")
@@ -60,9 +60,9 @@ plot_net_benefit_untreated <- function(bdca_fit, .color, .label) {
         )
 }
 
-plot_prob_useful <- function(bdca_fit, .color, .label) {
+plot_prob_useful <- function(fit, .color, .label) {
     bayesDCA:::plot_superiority_prob(
-        bdca_fit,
+        fit,
         type = "useful",
         colors = list(mced_test = .color),
         labels = list(mced_test = .label)
@@ -72,10 +72,10 @@ plot_prob_useful <- function(bdca_fit, .color, .label) {
         ggplot2::guides(color = "none")
 }
 
-plot_evpi <- function(bdca_fit, .color, .label) {
+plot_evpi <- function(fit, .color, .label) {
     suppressMessages({
         bayesDCA:::plot_evpi(
-            bdca_fit,
+            fit,
             type = "useful", # same as type = "best" in this case, just using for plotting functionality
             colors = list(mced_test = .color),
             labels = list(mced_test = .label)
