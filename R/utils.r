@@ -83,11 +83,12 @@ compute_nb_untreated <- function(bdca_fit, decision_strategy = "mced_test") {
         nrow = nrow(nb_mced),
         ncol = ncol(nb_mced)
     )
+    pop_scale <- get_population_scaling_factor()
     for (i in seq_along(bdca_fit$thresholds)) {
         .t <- bdca_fit$thresholds[i]
         w_t <- .t / (1 - .t)
-        nb_mced_ut[, i] <- 1000 * ((nb_mced[, i] - nb_ta[, i]) / w_t)
-        treat_none_ut[, i] <- 1000 * ((1 - prev) - (prev * (1 / w_t)))
+        nb_mced_ut[, i] <- pop_scale * ((nb_mced[, i] - nb_ta[, i]) / w_t)
+        treat_none_ut[, i] <- pop_scale * ((1 - prev) - (prev * (1 / w_t)))
         delta_ut[, i] <- nb_mced_ut[, i] - pmax(treat_none_ut[, i], 0.0)
     }
 
@@ -105,4 +106,12 @@ compute_nb_untreated <- function(bdca_fit, decision_strategy = "mced_test") {
         p_useful = colMeans(delta_ut > 0)
     )
     return(df)
+}
+
+get_population_scaling_factor <- function(as_string = FALSE) {
+    if (isTRUE(as_string)) {
+        return("100,000")
+    } else {
+        return(100000)
+    }
 }

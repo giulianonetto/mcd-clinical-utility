@@ -17,7 +17,7 @@ plot_net_benefit_treated <- function(fit, .color, .label) {
     color_values <- get_color_values(.color = .color, .label = .label)
     label_values <- get_labels_values(.label = .label)
     p <- bayesDCA:::plot.BayesDCA(fit) +
-        ggplot2::theme_bw(base_size = 18) +
+        ggplot2::theme_bw(base_size = 24) +
         ggplot2::theme(legend.position = c(.85, .85)) +
         ggplot2::scale_color_manual(values = color_values, labels = label_values) +
         ggplot2::scale_fill_manual(values = color_values, labels = label_values) +
@@ -63,11 +63,16 @@ plot_net_benefit_untreated <- function(fit, .color, .label) {
         ) +
         ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
         ggplot2::scale_x_continuous(labels = scales::percent) +
-        ggplot2::theme_bw(base_size = 18) +
+        ggplot2::scale_y_continuous(
+            breaks = scales::pretty_breaks(10, min.n = 6)
+        ) +
+        ggplot2::theme_bw(base_size = 24) +
         ggplot2::theme(legend.position = c(.15, .85)) +
         ggplot2::labs(
             x = "Decision threshold",
-            y = "Net true negatives per 1000 patients"
+            y = stringr::str_glue(
+                "Net true negatives per {get_population_scaling_factor(as_string = TRUE)} patients"
+            )
         ) +
         ggplot2::scale_color_manual(
             values = .colors,
@@ -82,7 +87,7 @@ plot_prob_useful <- function(fit, .color, .label) {
         colors = list(mced_test = .color),
         labels = list(mced_test = .label)
     ) +
-        ggplot2::theme_bw(base_size = 18) +
+        ggplot2::theme_bw(base_size = 24) +
         ggplot2::labs(subtitle = NULL) +
         ggplot2::guides(color = "none")
 }
@@ -95,70 +100,13 @@ plot_evpi <- function(fit, .color, .label) {
             colors = list(mced_test = .color),
             labels = list(mced_test = .label)
         ) +
-            ggplot2::theme_bw(base_size = 18) +
+            ggplot2::theme_bw(base_size = 24) +
             ggplot2::theme(legend.position = c(.75, .85)) +
             ggplot2::labs(subtitle = NULL, y = "Net true positives") +
             ggplot2::scale_y_continuous(
-                breaks = scales::pretty_breaks(10),
-                labels = function(x) 1000 * x
+                breaks = scales::pretty_breaks(10, min.n = 6),
+                labels = function(x) get_population_scaling_factor() * x
             ) +
             ggplot2::guides(color = "none")
     })
-}
-
-
-create_pathways_figures <- function(pathways_dca_results) {
-    combined_plots <- purrr::imap(
-        pathways_dca_results,
-        ~ {
-            p1 <- .x$dca_treated +
-                ggplot2::labs(y = .y, subtitle = NULL) +
-                ggplot2::theme(axis.title.y = ggplot2::element_text(size = 25))
-            p2 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
-            p3 <- .x$dca_untreated + ggplot2::labs(y = NULL, subtitle = NULL) +
-                ggplot2::guides(color = "none")
-            (p1 | p2 | p3) + patchwork::plot_layout(guides = "collect") &
-                ggplot2::theme(legend.position = "right")
-        }
-    )
-
-    combined_plots$Overall[[1]] <- combined_plots$Overall[[1]] +
-        ggplot2::labs(
-            title = "Net benefit"
-        ) +
-        ggplot2::theme(
-            plot.title = ggplot2::element_text(hjust = 0.5, size = 35)
-        )
-    combined_plots$Overall[[2]] <- combined_plots$Overall[[2]] +
-        ggplot2::labs(
-            title = "P(useful)"
-        ) +
-        ggplot2::theme(
-            plot.title = ggplot2::element_text(hjust = 0.5, size = 35)
-        )
-    combined_plots$Overall[[3]] <- combined_plots$Overall[[3]] +
-        ggplot2::labs(
-            title = "Net true negatives",
-            subtitle = "per 1000 patients"
-        ) +
-        ggplot2::theme(
-            plot.title = ggplot2::element_text(hjust = 0.5, size = 35),
-            plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 30)
-        )
-
-
-
-    fig01 <- (
-        combined_plots$Overall /
-            combined_plots$Gynaecology /
-            combined_plots$`Upper GI` /
-            combined_plots$`Lower GI` /
-            combined_plots$Lung /
-            combined_plots$RDC
-    )
-    ggplot2::ggsave(
-        here::here("output/testing/fig01.png"),
-        fig01,
-        width = 24, height = 28
-    )
 }

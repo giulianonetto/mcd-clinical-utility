@@ -16,8 +16,8 @@ list(
     name = pathways_dca_results,
     command = run_symplify_pathways_dca(
       symplify_pathways_data = here("data/symplify-pathways.tsv"),
-      output_dir = here::here("output/testing"),
-      n_draws = 2e4
+      output_dir = here::here("output/pathways"),
+      n_draws = 2e3
     )
   )
 )
