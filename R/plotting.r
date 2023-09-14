@@ -29,6 +29,11 @@ plot_net_benefit_treated <- function(fit, .color, .label) {
 plot_net_benefit_untreated <- function(fit, .color, .label) {
     plot_df <- compute_nb_untreated(fit)
     .colors <- get_color_values(.color = .color, .label = .label)
+    label_function <- function(x) {
+        x_lab <- paste0(x / 1000, "K")
+        x_lab[x == 0L] <- "0"
+        return(x_lab)
+    }
     plot_df %>%
         ggplot2::ggplot(ggplot2::aes(thr, estimate, ymin = lower, ymax = upper)) +
         # Plot curve for model/test
@@ -64,7 +69,8 @@ plot_net_benefit_untreated <- function(fit, .color, .label) {
         ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
         ggplot2::scale_x_continuous(labels = scales::percent) +
         ggplot2::scale_y_continuous(
-            breaks = scales::pretty_breaks(10, min.n = 6)
+            breaks = scales::pretty_breaks(10),
+            labels = scales::label_number(big.mark = ",")
         ) +
         ggplot2::theme_bw(base_size = 24) +
         ggplot2::theme(legend.position = c(.15, .85)) +

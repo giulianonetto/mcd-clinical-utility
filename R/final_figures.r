@@ -1,16 +1,11 @@
-create_pathways_figures <- function(pathways_dca_results) {
+create_pathways_figures <- function(pathways_dca_results, output_dir = "output/testing") {
     figure_width <- 24
-    figure_height <- figure_width * 1.3
+    figure_height <- figure_width * 1.4
     column_titles_font_size <- figure_width * 1.3
     row_titles_font_size <- figure_width
     x_axis_font_size <- figure_width * 0.85
     y_axis_font_size <- figure_width * 0.7
     legend_font_size <- figure_width * 0.9
-    net_neg_label_function <- function(x) {
-        x_lab <- paste0(x / 1000, "K")
-        x_lab[x == 0L] <- "0"
-        return(x_lab)
-    }
     combined_plots <- purrr::imap(
         pathways_dca_results,
         ~ {
@@ -24,9 +19,6 @@ create_pathways_figures <- function(pathways_dca_results) {
                 )
             p2 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
             p3 <- .x$dca_untreated +
-                ggplot2::scale_y_continuous(
-                    labels = net_neg_label_function
-                ) +
                 ggplot2::labs(y = NULL, subtitle = NULL) +
                 ggplot2::guides(color = "none")
             p4 <- .x$evpi +
@@ -133,6 +125,6 @@ create_pathways_figures <- function(pathways_dca_results) {
         here::here(stringr::str_glue("{output_dir}/fig02.png")),
         fig02,
         width = figure_width * 0.8,
-        height = figure_height * 0.4
+        height = figure_height * 0.35
     )
 }
