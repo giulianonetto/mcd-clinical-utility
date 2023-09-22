@@ -1,7 +1,7 @@
 run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draws = 4000) {
     dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
     extracted_data <- readr::read_tsv(symplify_pathways_data, show_col_types = FALSE)
-    extracted_data <- map_df(
+    extracted_data <- purrr::map_df(
         seq_len(nrow(extracted_data)),
         function(i) {
             x <- extracted_data[i, ]
@@ -23,6 +23,8 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         "Upper GI" = "#D95F02"
     )
     pathways <- names(.colors)
+    # decision_thresholds <- seq(0, ceiling(extracted_data_pathway$p * 1.2) / 100, length = 100)
+    decision_thresholds <- seq(0, 0.075, by = 0.001)
     pathways_dca_results <- vector("list", length = length(pathways))
     names(pathways_dca_results) <- pathways
     for (.pathway in pathways) {
@@ -41,9 +43,10 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         )
         .fit <- bayesDCA::dca(
             dca_data,
-            thresholds = seq(0, ceiling(extracted_data_pathway$p * 1.2) / 100, length = 100),
+            thresholds = decision_thresholds,
             n_draws = n_draws
         )
+        .fit$nb_untreated <- compute_nb_untreated(.fit)
 
         .label <- ifelse(
             .pathway == "Overall",
@@ -54,14 +57,29 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         # TODO: prevalence vertical lines
         dca_treated <- plot_net_benefit_treated(fit = .fit, .color = .color, .label = .label)
         dca_untreated <- plot_net_benefit_untreated(fit = .fit, .color = .color, .label = .label)
+        delta_treated <- plot_delta_treated(fit = .fit, .color = .color, .label = .label)
         p_useful <- plot_prob_useful(fit = .fit, .color = .color, .label = .label)
         evpi <- plot_evpi(fit = .fit, .color = .color, .label = .label)
+        trade_off <- plot_trade_off(fit = .fit, .color = .color, .label = .label)
 
         pathways_dca_results[[.pathway]] <- list(
             dca_treated = dca_treated,
             dca_untreated = dca_untreated,
             p_useful = p_useful,
-            evpi = evpi
+            delta_treated = delta_treated,
+            evpi = evpi,
+            trade_off = trade_off
+        )
+        # add vertical line at t=3%
+        pathways_dca_results[[.pathway]] <- map(
+            pathways_dca_results[[.pathway]],
+            ~ {
+                .x$layers <- c(
+                    ggplot2::geom_vline(xintercept = 0.03, linetype = 3, linewidth = 1.5, alpha = 1),
+                    .x$layers
+                )
+                .x + ggplot2::theme(panel.grid = ggplot2::element_blank())
+            }
         )
     }
 
@@ -71,5 +89,5 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         output_dir = output_dir
     )
     logger::log_info("Figures successfully created!")
-    return(pathways_dca_results[[1]][[1]])
+    return("done")
 }

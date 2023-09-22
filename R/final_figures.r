@@ -128,3 +128,42 @@ create_pathways_figures <- function(pathways_dca_results, output_dir = "output/t
         height = figure_height * 0.35
     )
 }
+
+create_trade_off_figure <- function(pathways_dca_results, output_dir) {
+    trade_off_plots <- purrr::map(pathways_dca_results, ~ .x$trade_off)
+    df <- purrr::map_df(
+        trade_off_plots,
+        ~ .x$data %>%
+            dplyr::filter(thr %in% c(0.02, 0.03)) %>%
+            dplyr::select(thr, contains("trade_off")),
+        .id = "pathway"
+    )
+    df %>%
+        dplyr::mutate(
+            x = factor(
+                paste0(thr * 100, "%")
+            )
+        ) %>%
+        ggplot2::ggplot(
+            ggplot2::aes(
+                x = x,
+                y = estimate_trade_off,
+                ymin = lower_trade_off,
+                ymax = upper_trade_off
+            )
+        ) +
+        ggplot2::geom_pointrange(
+            aes(color = pathway),
+            position = ggplot2::position_dodge(width = .4)
+        ) +
+        ggplot2::theme_bw(base_size = 24) +
+        # ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::coord_cartesian(ylim = c(-0.5, NA)) +
+        ggplot2::scale_color_discrete(name = NULL) +
+        ggplot2::labs(
+            x = "Decision threshold",
+            y = "# tests",
+            title = "MCED test trade-off",
+            subtitle = "Number of tests for each additional net true negative"
+        )
+}

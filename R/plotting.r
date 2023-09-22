@@ -21,13 +21,36 @@ plot_net_benefit_treated <- function(fit, .color, .label) {
         ggplot2::theme(legend.position = c(.85, .85)) +
         ggplot2::scale_color_manual(values = color_values, labels = label_values) +
         ggplot2::scale_fill_manual(values = color_values, labels = label_values) +
-        ggplot2::coord_cartesian(ylim = c(-0.001, NA))
+        ggplot2::coord_cartesian(ylim = c(-0.001, NA)) +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
+        )
     p$layers[[1]]$aes_params <- list(alpha = 0.5)
     return(p)
 }
 
+plot_delta_treated <- function(fit, .color, .label) {
+    color_values <- get_color_values(.color = .color, .label = .label)
+    label_values <- get_labels_values(.label = .label)
+    p <- bayesDCA:::plot_delta(fit) +
+        ggplot2::theme_bw(base_size = 24) +
+        ggplot2::theme(legend.position = c(.25, .9)) +
+        ggplot2::scale_color_manual(values = color_values, labels = label_values) +
+        ggplot2::scale_fill_manual(values = color_values, labels = label_values) +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
+        )
+    return(p)
+}
+
 plot_net_benefit_untreated <- function(fit, .color, .label) {
-    plot_df <- compute_nb_untreated(fit)
+    plot_df <- fit$nb_untreated
+    if (is.null(plot_df)) {
+        plot_df <- compute_nb_untreated(fit)
+    }
+
     .colors <- get_color_values(.color = .color, .label = .label)
     label_function <- function(x) {
         x_lab <- paste0(x / 1000, "K")
@@ -35,6 +58,10 @@ plot_net_benefit_untreated <- function(fit, .color, .label) {
         return(x_lab)
     }
     plot_df %>%
+        dplyr::mutate_at(
+            dplyr::vars(dplyr::matches("estimate|lower|upper")),
+            ~ . * get_population_scaling_factor()
+        ) %>%
         ggplot2::ggplot(ggplot2::aes(thr, estimate, ymin = lower, ymax = upper)) +
         # Plot curve for model/test
         ggplot2::geom_ribbon(alpha = 0.5, fill = .colors[.label]) +
@@ -66,8 +93,11 @@ plot_net_benefit_untreated <- function(fit, .color, .label) {
             linewidth = 1.5,
             ggplot2::aes(color = "Refer all", yintercept = 0)
         ) +
-        ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
-        ggplot2::scale_x_continuous(labels = scales::percent) +
+        ggplot2::coord_cartesian(ylim = c(-0.01, 9e4)) +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
+        ) +
         ggplot2::scale_y_continuous(
             breaks = scales::pretty_breaks(10),
             labels = scales::label_number(big.mark = ",")
@@ -95,7 +125,11 @@ plot_prob_useful <- function(fit, .color, .label) {
     ) +
         ggplot2::theme_bw(base_size = 24) +
         ggplot2::labs(subtitle = NULL) +
-        ggplot2::guides(color = "none")
+        ggplot2::guides(color = "none") +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
+        )
 }
 
 plot_evpi <- function(fit, .color, .label) {
@@ -113,6 +147,67 @@ plot_evpi <- function(fit, .color, .label) {
                 breaks = scales::pretty_breaks(10, min.n = 6),
                 labels = function(x) get_population_scaling_factor() * x
             ) +
+            ggplot2::scale_x_continuous(
+                labels = scales::label_percent(accuracy = 1),
+                breaks = seq(0, 0.07, by = 0.01)
+            ) +
             ggplot2::guides(color = "none")
     })
+}
+
+plot_trade_off <- function(fit, .color, .label, max_abs_value = NULL, max_abs_value_tol = 5) {
+    plot_df <- fit$nb_untreated
+    if (is.null(plot_df)) {
+        plot_df <- compute_nb_untreated(fit)
+    }
+
+    .colors <- get_color_values(.color = .color, .label = .label)
+    label_function <- function(x) {
+        x_lab <- paste0(x / 1000, "K")
+        x_lab[x == 0L] <- "0"
+        return(x_lab)
+    }
+    if (is.null(max_abs_value)) {
+        max_abs_value <- pmin(
+            max(
+                c(
+                    abs(plot_df$upper),
+                    abs(plot_df$lower)
+                )
+            ),
+            max_abs_value_tol
+        )
+    }
+    x_breaks <- seq(-max_abs_value, max_abs_value, by = 1)
+    plot_df %>%
+        ggplot2::ggplot(
+            ggplot2::aes(
+                x = thr,
+                y = estimate_trade_off,
+                ymin = lower_trade_off,
+                ymax = upper_trade_off
+            )
+        ) +
+        ggplot2::geom_ribbon(alpha = 0.5, fill = .colors[.label]) +
+        ggplot2::geom_line(linewidth = 1.5, ggplot2::aes(color = .label)) +
+        ggplot2::coord_cartesian(ylim = c(-max_abs_value, max_abs_value)) +
+        ggplot2::theme_bw(base_size = 24) +
+        ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::labs(
+            x = "Decision threshold",
+            y = "# tests",
+            title = "MCED test trade-off",
+            subtitle = "Number of tests for each additional net true negative"
+        ) +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
+        ) +
+        ggplot2::scale_y_continuous(
+            breaks = x_breaks
+        ) +
+        ggplot2::scale_color_manual(
+            values = .colors,
+            name = NULL
+        )
 }

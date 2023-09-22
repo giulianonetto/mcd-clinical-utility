@@ -79,17 +79,18 @@ compute_nb_untreated <- function(bdca_fit, decision_strategy = "mced_test") {
     nb_ta <- bdca_fit$fit$distributions$treat_all
     prev <- bdca_fit$fit$distributions$prevalence
 
-    delta_ut <- treat_none_ut <- nb_mced_ut <- matrix(
+    trade_off_ut <- delta_ut <- treat_none_ut <- nb_mced_ut <- matrix(
         nrow = nrow(nb_mced),
         ncol = ncol(nb_mced)
     )
-    pop_scale <- get_population_scaling_factor()
+
     for (i in seq_along(bdca_fit$thresholds)) {
         .t <- bdca_fit$thresholds[i]
         w_t <- .t / (1 - .t)
-        nb_mced_ut[, i] <- pop_scale * ((nb_mced[, i] - nb_ta[, i]) / w_t)
-        treat_none_ut[, i] <- pop_scale * ((1 - prev) - (prev * (1 / w_t)))
+        nb_mced_ut[, i] <- ((nb_mced[, i] - nb_ta[, i]) / w_t)
+        treat_none_ut[, i] <- ((1 - prev) - (prev * (1 / w_t)))
         delta_ut[, i] <- nb_mced_ut[, i] - pmax(treat_none_ut[, i], 0.0)
+        trade_off_ut[, i] <- w_t / delta_ut[, i]
     }
 
     df <- data.frame(
@@ -103,7 +104,10 @@ compute_nb_untreated <- function(bdca_fit, decision_strategy = "mced_test") {
         estimate_delta = colMeans(delta_ut),
         lower_delta = matrixStats::colQuantiles(delta_ut, probs = 0.025),
         upper_delta = matrixStats::colQuantiles(delta_ut, probs = 0.975),
-        p_useful = colMeans(delta_ut > 0)
+        p_useful = colMeans(delta_ut > 0),
+        estimate_trade_off = matrixStats::colQuantiles(trade_off_ut, probs = 0.5),
+        lower_trade_off = matrixStats::colQuantiles(trade_off_ut, probs = 0.025),
+        upper_trade_off = matrixStats::colQuantiles(trade_off_ut, probs = 0.975)
     )
     return(df)
 }
