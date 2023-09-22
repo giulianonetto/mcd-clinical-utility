@@ -1,11 +1,15 @@
-create_pathways_figures <- function(pathways_dca_results, output_dir = "output/testing") {
+create_pathways_figures <- function(
+    pathways_dca_results,
+    .colors,
+    output_dir = "output/testing") {
     figure_width <- 24
     figure_height <- figure_width * 1.4
-    column_titles_font_size <- figure_width * 1.3
-    row_titles_font_size <- figure_width
+    column_titles_font_size <- figure_width * 2.25
+    column_subtitles_font_size <- figure_width * 1.3
+    row_titles_font_size <- figure_width * 1.5
     x_axis_font_size <- figure_width * 0.85
     y_axis_font_size <- figure_width * 0.7
-    legend_font_size <- figure_width * 0.9
+    legend_font_size <- figure_width * 1.25
     combined_plots <- purrr::imap(
         pathways_dca_results,
         ~ {
@@ -14,7 +18,8 @@ create_pathways_figures <- function(pathways_dca_results, output_dir = "output/t
                 ggplot2::theme(
                     axis.title.y = ggplot2::element_text(
                         size = row_titles_font_size,
-                        face = "bold"
+                        face = "bold",
+                        vjust = 1.5
                     )
                 )
             p2 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
@@ -35,6 +40,7 @@ create_pathways_figures <- function(pathways_dca_results, output_dir = "output/t
                 ggplot2::theme(
                     legend.position = "top",
                     legend.text = ggplot2::element_text(size = legend_font_size),
+                    legend.justification = "left",
                     axis.text.x = ggplot2::element_text(size = x_axis_font_size),
                     axis.text.y = ggplot2::element_text(size = y_axis_font_size)
                 )
@@ -43,6 +49,7 @@ create_pathways_figures <- function(pathways_dca_results, output_dir = "output/t
 
     column_title_config <- ggplot2::element_text(
         hjust = 0.5,
+        vjust = -3.5,
         size = column_titles_font_size,
         face = "bold"
     )
@@ -64,12 +71,12 @@ create_pathways_figures <- function(pathways_dca_results, output_dir = "output/t
         ggplot2::labs(
             title = "Net true negatives",
             subtitle = stringr::str_glue(
-                "per {get_population_scaling_factor(as_string = TRUE)} patients"
+                "Unnecessary referrals avoided\nper {get_population_scaling_factor(as_string = TRUE)} patients"
             )
         ) +
         ggplot2::theme(
             plot.title = column_title_config,
-            plot.subtitle = ggplot2::element_text(hjust = 0.5, size = column_titles_font_size * 0.85)
+            plot.subtitle = ggplot2::element_text(hjust = 0.5, vjust = -6, size = column_subtitles_font_size)
         )
 
     fig01 <- (
@@ -88,44 +95,84 @@ create_pathways_figures <- function(pathways_dca_results, output_dir = "output/t
     )
 
 
-    evpi_plots <- purrr::imap(
-        pathways_dca_results,
-        ~ {
-            .x$evpi +
-                ggplot2::labs(y = NULL, subtitle = NULL, title = .y) +
-                ggplot2::theme(
-                    plot.title = column_title_config
-                )
-        }
+    lines_order <- c(
+        "RDC",
+        "Gynaecology",
+        "Upper GI",
+        "Lower GI",
+        "Overall",
+        "Lung"
     )
+    legend_order <- c(
+        "Overall",
+        "Gynaecology",
+        "Upper GI",
+        "Lower GI",
+        "Lung",
+        "RDC"
+    )
+    evpi_data <- purrr::map_df(
+        pathways_dca_results,
+        ~ .x$evpi$data,
+        .id = "pathway"
+    ) %>%
+        dplyr::mutate(
+            pathway = factor(
+                as.character(pathway),
+                levels = lines_order
+            )
+        )
 
-    column_title_config$hjust <- 0
-
-    fig02 <- (
-        evpi_plots$Overall |
-            evpi_plots$Gynaecology |
-            evpi_plots$`Upper GI`
-    ) /
-        (
-            evpi_plots$`Lower GI` |
-                evpi_plots$Lung |
-                evpi_plots$RDC
+    column_title_config <- ggplot2::element_text(
+        hjust = 0,
+        size = figure_width * 1.35,
+        face = "bold"
+    )
+    fig02 <- evpi_data %>%
+        ggplot2::ggplot(
+            ggplot2::aes(
+                x = threshold,
+                y = .evpi,
+                color = pathway
+            )
         ) +
-        patchwork::plot_annotation(
+        ggplot2::geom_vline(xintercept = 0.03, linetype = 3, linewidth = 1.5, alpha = 1) +
+        ggplot2::geom_line(linewidth = 2) +
+        ggplot2::theme_bw(base_size = 24) +
+        ggplot2::theme(
+            plot.title = column_title_config,
+            plot.subtitle = ggplot2::element_text(hjust = 0, size = column_title_config$size * 0.8),
+            legend.position = c(.8, .75),
+            panel.grid = ggplot2::element_blank(),
+            legend.key.height = ggplot2::unit(0.75, "cm")
+        ) +
+        ggplot2::labs(
             title = "Expected Value of Perfect Information",
             subtitle = stringr::str_glue(
                 "per {get_population_scaling_factor(as_string = TRUE)} patients"
             ),
-            theme = ggplot2::theme(
-                plot.title = column_title_config,
-                plot.subtitle = ggplot2::element_text(hjust = 0, size = column_titles_font_size * 0.85)
-            )
+            y = "Net true positives",
+            x = "Decision threshold",
+            color = NULL
+        ) +
+        ggplot2::scale_color_manual(
+            values = .colors,
+            breaks = legend_order
+        ) +
+        ggplot2::scale_y_continuous(
+            breaks = scales::pretty_breaks(10, min.n = 6),
+            labels = function(x) get_population_scaling_factor() * x
+        ) +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
         )
+
     ggplot2::ggsave(
         here::here(stringr::str_glue("{output_dir}/fig02.png")),
         fig02,
-        width = figure_width * 0.8,
-        height = figure_height * 0.35
+        width = 10.5,
+        height = 7.5
     )
 }
 

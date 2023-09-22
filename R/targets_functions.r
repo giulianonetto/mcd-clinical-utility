@@ -86,6 +86,7 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
     logger::log_info("Creating final pathways figures")
     create_pathways_figures(
         pathways_dca_results = pathways_dca_results,
+        .colors = .colors,
         output_dir = output_dir
     )
     logger::log_info("Figures successfully created!")
