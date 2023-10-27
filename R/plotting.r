@@ -225,6 +225,9 @@ combine_trade_off_negative_plots <- function(
     pathways = NULL,
     min_p_useful = 0.8) {
     trade_off_plots <- purrr::map(pathways_dca_results, ~ .x$trade_off_negative)
+    if (!is.null(pathways)) {
+        legend_order <- legend_order[legend_order %in% pathways]
+    }
     trade_off_plots <- trade_off_plots[legend_order]
     df <- purrr::map_df(
         trade_off_plots,
@@ -279,9 +282,9 @@ combine_trade_off_negative_plots <- function(
         ) +
         ggplot2::labs(
             x = "Decision threshold",
-            y = "# tests",
+            y = "# tests per net true negative",
             title = "MCED test trade-off",
-            subtitle = "Number of tests for each additional net true negative",
+            subtitle = "Number of tests for each correctly avoided referral",
             color = NULL
         )
 }
@@ -320,7 +323,7 @@ plot_trade_off_positive <- function(fit, .color, .label, max_abs_value = NULL, m
             x = "Decision threshold",
             y = "# tests",
             title = "MCED test trade-off",
-            subtitle = "Number of tests for each additional net true positive"
+            subtitle = "Number of tests to refer one true cancer"
         ) +
         ggplot2::scale_x_continuous(
             labels = scales::label_percent(accuracy = 1),
@@ -343,6 +346,9 @@ combine_trade_off_positive_plots <- function(
     pathways = NULL,
     min_p_useful = 0.8) {
     trade_off_plots <- purrr::map(pathways_dca_results, ~ .x$trade_off_positive)
+    if (!is.null(pathways)) {
+        legend_order <- legend_order[legend_order %in% pathways]
+    }
     trade_off_plots <- trade_off_plots[legend_order]
     df <- purrr::map_df(
         trade_off_plots,
@@ -406,7 +412,7 @@ combine_trade_off_positive_plots <- function(
             x = "Decision threshold",
             y = "# tests",
             title = "MCED test trade-off",
-            subtitle = "Number of tests for each additional net true positive",
+            subtitle = "Number of tests to refer one true cancer",
             color = NULL
         )
 }

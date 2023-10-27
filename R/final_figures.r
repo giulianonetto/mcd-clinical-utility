@@ -200,56 +200,48 @@ create_final_figures <- function(
         height = 7.5
     )
 
-    fig02a <- combine_trade_off_negative_plots(
+    fig02 <- combine_trade_off_negative_plots(
         pathways_dca_results = pathways_dca_results,
         output_dir = here::here(output_dir),
         legend_order = legend_order,
-        .colors = .colors
-    )
-
-    # fig02a <- fig02 +
-    #     ggplot2::geom_point(
-    #         data = ground_truth_0.03,
-    #         ggplot2::aes(x = "3%", y = 1 / ntn, fill = pathway),
-    #         position = ggplot2::position_dodge(width = .65),
-    #         pch = 21,
-    #         inherit.aes = FALSE
-    #     ) +
-    #     ggplot2::scale_fill_manual(values = .colors, breaks = legend_order)
-
-    ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/fig02a.png")),
-        fig02a,
-        width = 10.5,
-        height = 7.5
-    )
-
-    fig02b <- combine_trade_off_positive_plots(
-        pathways_dca_results = pathways_dca_results,
-        output_dir = here::here(output_dir),
-        legend_order = legend_order,
+        pathways = legend_order[legend_order != "Overall"],
         .colors = .colors
     )
 
     ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/fig02b.png")),
-        fig02b,
+        here::here(stringr::str_glue("{output_dir}/fig02.png")),
+        fig02,
         width = 10.5,
         height = 7.5
     )
 
-    a <- fig02a +
+    tradeoff_positive <- combine_trade_off_positive_plots(
+        pathways_dca_results = pathways_dca_results,
+        output_dir = here::here(output_dir),
+        legend_order = legend_order,
+        pathways = legend_order[legend_order != "Overall"],
+        .colors = .colors
+    )
+
+    ggplot2::ggsave(
+        here::here(stringr::str_glue("{output_dir}/tradeoff_positive.png")),
+        tradeoff_positive,
+        width = 10.5,
+        height = 7.5
+    )
+
+    a <- fig02 +
         ggplot2::ggtitle(NULL) +
         ggplot2::theme(
             legend.position = c(0.16, 0.74),
             legend.key.height = ggplot2::unit(0.8, "cm")
         )
-    b <- fig02b + ggplot2::ggtitle(NULL) + ggplot2::guides(color = "none")
+    b <- tradeoff_positive + ggplot2::ggtitle(NULL) + ggplot2::guides(color = "none")
+    both_tradeoffs <- (a | b) + patchwork::plot_annotation(tag_levels = c("A", "B"))
     ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/fig02.png")),
-        (a | b) + patchwork::plot_annotation(tag_levels = c("A", "B")),
+        here::here(stringr::str_glue("{output_dir}/both_tradeoffs.png")),
+        both_tradeoffs,
         width = 20,
-        height = 7,
         height = 7
     )
 }
