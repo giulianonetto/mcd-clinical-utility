@@ -74,23 +74,28 @@ generate_data_from_counts <- function(n, d, tp, tn, fp, fn) {
     return(out)
 }
 
-compute_nb_untreated <- function(bdca_fit, decision_strategy = "mced_test") {
-    nb_mced <- bdca_fit$fit$distributions$net_benefit[[decision_strategy]]
-    nb_ta <- bdca_fit$fit$distributions$treat_all
-    prev <- bdca_fit$fit$distributions$prevalence
+compute_nb_untreated <- function(
+    bdca_fit,
+    decision_strategy = "mced_test",
+    return_posterior = FALSE) {
+    se <- bdca_fit$fit$distributions$sensitivity[[decision_strategy]]
+    sp <- bdca_fit$fit$distributions$specificity[[decision_strategy]]
+    p <- bdca_fit$fit$distributions$prevalence
 
     trade_off_ut <- delta_ut <- treat_none_ut <- nb_mced_ut <- matrix(
-        nrow = nrow(nb_mced),
-        ncol = ncol(nb_mced)
+        nrow = nrow(se),
+        ncol = ncol(se)
     )
 
     for (i in seq_along(bdca_fit$thresholds)) {
         .t <- bdca_fit$thresholds[i]
-        w_t <- .t / (1 - .t)
-        nb_mced_ut[, i] <- ((nb_mced[, i] - nb_ta[, i]) / w_t)
-        treat_none_ut[, i] <- ((1 - prev) - (prev * (1 / w_t)))
-        delta_ut[, i] <- nb_mced_ut[, i] - pmax(treat_none_ut[, i], 0.0)
-        trade_off_ut[, i] <- w_t / delta_ut[, i]
+        w_t <- (1 - .t) / .t
+        # Net TN = Sp * (1 - p) - 1/odds(t) * (1 - Se) * p
+        nb_mced_ut[, i] <- sp[, i] * (1 - p) - w_t * (1 - se[, i]) * p
+        treat_none_ut[, i] <- 1 * (1 - p) - w_t * (1 - 0) * p
+        treat_all_ut <- 0.00
+        delta_ut[, i] <- nb_mced_ut[, i] - pmax(treat_none_ut[, i], treat_all_ut)
+        trade_off_ut[, i] <- 1 / delta_ut[, i]
     }
 
     df <- data.frame(
@@ -105,11 +110,24 @@ compute_nb_untreated <- function(bdca_fit, decision_strategy = "mced_test") {
         lower_delta = matrixStats::colQuantiles(delta_ut, probs = 0.025),
         upper_delta = matrixStats::colQuantiles(delta_ut, probs = 0.975),
         p_useful = colMeans(delta_ut > 0),
-        estimate_trade_off = matrixStats::colQuantiles(trade_off_ut, probs = 0.5),
-        lower_trade_off = matrixStats::colQuantiles(trade_off_ut, probs = 0.025),
-        upper_trade_off = matrixStats::colQuantiles(trade_off_ut, probs = 0.975)
+        estimate_trade_off_negative = matrixStats::colQuantiles(trade_off_ut, probs = 0.5),
+        lower_trade_off_negative = matrixStats::colQuantiles(trade_off_ut, probs = 0.025),
+        upper_trade_off_negative = matrixStats::colQuantiles(trade_off_ut, probs = 0.975)
     )
-    return(df)
+
+    if (isFALSE(return_posterior)) {
+        return(df)
+    } else {
+        return(list(
+            df = df,
+            posterior = list(
+                ntn = nb_mced_ut,
+                treat_none = treat_none_ut,
+                delta = delta_ut,
+                treat_all = 0
+            )
+        ))
+    }
 }
 
 get_population_scaling_factor <- function(as_string = FALSE) {
@@ -118,4 +136,30 @@ get_population_scaling_factor <- function(as_string = FALSE) {
     } else {
         return(100000)
     }
+}
+
+
+compute_trade_off_positive <- function(fit) {
+    nb <- fit$fit$distributions$net_benefit$mced_test
+    treat_all <- fit$fit$distributions$treat_all
+    treat_none <- 0.0
+    trade_off_positive_posterior <- matrix(
+        nrow = nrow(nb), ncol = ncol(nb)
+    )
+    for (i in seq_along(fit$thresholds)) {
+        .t <- fit$thresholds[i]
+        .nb <- nb[, i]
+        .default_nb <- pmax(treat_all[, i], treat_none)
+        .delta_nb <- .nb - .default_nb
+        trade_off_positive_posterior[, i] <- 1 / .delta_nb
+    }
+
+    trade_off_positive_summary <- data.frame(
+        thr = fit$thresholds,
+        estimate_trade_off_positive = matrixStats::colQuantiles(trade_off_positive_posterior, probs = 0.5),
+        lower_trade_off_positive = matrixStats::colQuantiles(trade_off_positive_posterior, probs = 0.025),
+        upper_trade_off_positive = matrixStats::colQuantiles(trade_off_positive_posterior, probs = 0.975)
+    )
+
+    return(trade_off_positive_summary)
 }

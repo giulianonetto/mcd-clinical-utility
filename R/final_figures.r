@@ -1,7 +1,8 @@
-create_pathways_figures <- function(
+create_final_figures <- function(
     pathways_dca_results,
     .colors,
     output_dir = "output/testing") {
+    # figures config
     figure_width <- 24
     figure_height <- figure_width * 1.4
     column_titles_font_size <- figure_width * 2.25
@@ -10,6 +11,47 @@ create_pathways_figures <- function(
     x_axis_font_size <- figure_width * 0.85
     y_axis_font_size <- figure_width * 0.7
     legend_font_size <- figure_width * 1.25
+    lines_order <- c(
+        "RDC",
+        "Gynaecology",
+        "Upper GI",
+        "Lower GI",
+        "Overall",
+        "Lung"
+    )
+    legend_order <- c(
+        "Overall",
+        "Gynaecology",
+        "Upper GI",
+        "Lower GI",
+        "Lung",
+        "RDC"
+    )
+    # ground truth Net TN for testing (using point estimates only)
+    ground_truth_0.03 <- purrr::map_df(
+        list(
+            Overall = c(se = 0.663, sp = 0.984, p = 0.067),
+            Gynaecology = c(se = 0.491, sp = 0.983, p = 0.037),
+            "Lower GI" = c(se = 0.685, sp = 0.991, p = 0.065),
+            "Upper GI" = c(se = 0.804, sp = 0.981, p = 0.045),
+            "Lung" = c(se = 0.708, sp = 0.962, p = 0.298),
+            "RDC" = c(se = 0.556, sp = 0.982, p = 0.073)
+        ), ~ {
+            w <- (1 - 0.03) / 0.03
+            ntn <- .x["sp"] * (1 - .x["p"]) - w * (1 - .x["se"]) * .x["p"]
+            c(ntn = unname(ntn))
+        },
+        .id = "pathway"
+    ) %>%
+        dplyr::mutate(
+            pathway = factor(
+                as.character(pathway),
+                levels = legend_order
+            )
+        )
+    readr::write_tsv(ground_truth_0.03, "x.tsv")
+
+    # Figure 1
     combined_plots <- purrr::imap(
         pathways_dca_results,
         ~ {
@@ -25,12 +67,12 @@ create_pathways_figures <- function(
             p2 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
             p3 <- .x$dca_untreated +
                 ggplot2::labs(y = NULL, subtitle = NULL) +
-                ggplot2::guides(color = "none")
-            p4 <- .x$evpi +
-                ggplot2::labs(y = NULL, subtitle = NULL) +
                 ggplot2::guides(color = "none") +
-                ggplot2::theme(
-                    plot.margin = margin(t = 0.3, r = 4, b = 0.3, l = 2, "cm")
+                ggplot2::geom_point(
+                    data = ground_truth_0.03[ground_truth_0.03$pathway == .y, ],
+                    ggplot2::aes(x = 0.03, y = ntn * 1e5),
+                    size = 3,
+                    inherit.aes = FALSE
                 )
             (p1 | p2 | p3) +
                 patchwork::plot_layout(
@@ -94,23 +136,6 @@ create_pathways_figures <- function(
         height = figure_height
     )
 
-
-    lines_order <- c(
-        "RDC",
-        "Gynaecology",
-        "Upper GI",
-        "Lower GI",
-        "Overall",
-        "Lung"
-    )
-    legend_order <- c(
-        "Overall",
-        "Gynaecology",
-        "Upper GI",
-        "Lower GI",
-        "Lung",
-        "RDC"
-    )
     evpi_data <- purrr::map_df(
         pathways_dca_results,
         ~ .x$evpi$data,
@@ -128,7 +153,7 @@ create_pathways_figures <- function(
         size = figure_width * 1.35,
         face = "bold"
     )
-    fig02 <- evpi_data %>%
+    supp_fig01 <- evpi_data %>%
         ggplot2::ggplot(
             ggplot2::aes(
                 x = threshold,
@@ -169,48 +194,62 @@ create_pathways_figures <- function(
         )
 
     ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/fig02.png")),
-        fig02,
+        here::here(stringr::str_glue("{output_dir}/supp_fig01.png")),
+        supp_fig01,
         width = 10.5,
         height = 7.5
     )
-}
 
-create_trade_off_figure <- function(pathways_dca_results, output_dir) {
-    trade_off_plots <- purrr::map(pathways_dca_results, ~ .x$trade_off)
-    df <- purrr::map_df(
-        trade_off_plots,
-        ~ .x$data %>%
-            dplyr::filter(thr %in% c(0.02, 0.03)) %>%
-            dplyr::select(thr, contains("trade_off")),
-        .id = "pathway"
+    fig02a <- combine_trade_off_negative_plots(
+        pathways_dca_results = pathways_dca_results,
+        output_dir = here::here(output_dir),
+        legend_order = legend_order,
+        .colors = .colors
     )
-    df %>%
-        dplyr::mutate(
-            x = factor(
-                paste0(thr * 100, "%")
-            )
-        ) %>%
-        ggplot2::ggplot(
-            ggplot2::aes(
-                x = x,
-                y = estimate_trade_off,
-                ymin = lower_trade_off,
-                ymax = upper_trade_off
-            )
-        ) +
-        ggplot2::geom_pointrange(
-            aes(color = pathway),
-            position = ggplot2::position_dodge(width = .4)
-        ) +
-        ggplot2::theme_bw(base_size = 24) +
-        # ggplot2::theme(legend.position = c(.15, .85)) +
-        ggplot2::coord_cartesian(ylim = c(-0.5, NA)) +
-        ggplot2::scale_color_discrete(name = NULL) +
-        ggplot2::labs(
-            x = "Decision threshold",
-            y = "# tests",
-            title = "MCED test trade-off",
-            subtitle = "Number of tests for each additional net true negative"
+
+    # fig02a <- fig02 +
+    #     ggplot2::geom_point(
+    #         data = ground_truth_0.03,
+    #         ggplot2::aes(x = "3%", y = 1 / ntn, fill = pathway),
+    #         position = ggplot2::position_dodge(width = .65),
+    #         pch = 21,
+    #         inherit.aes = FALSE
+    #     ) +
+    #     ggplot2::scale_fill_manual(values = .colors, breaks = legend_order)
+
+    ggplot2::ggsave(
+        here::here(stringr::str_glue("{output_dir}/fig02a.png")),
+        fig02a,
+        width = 10.5,
+        height = 7.5
+    )
+
+    fig02b <- combine_trade_off_positive_plots(
+        pathways_dca_results = pathways_dca_results,
+        output_dir = here::here(output_dir),
+        legend_order = legend_order,
+        .colors = .colors
+    )
+
+    ggplot2::ggsave(
+        here::here(stringr::str_glue("{output_dir}/fig02b.png")),
+        fig02b,
+        width = 10.5,
+        height = 7.5
+    )
+
+    a <- fig02a +
+        ggplot2::ggtitle(NULL) +
+        ggplot2::theme(
+            legend.position = c(0.16, 0.74),
+            legend.key.height = ggplot2::unit(0.8, "cm")
         )
+    b <- fig02b + ggplot2::ggtitle(NULL) + ggplot2::guides(color = "none")
+    ggplot2::ggsave(
+        here::here(stringr::str_glue("{output_dir}/fig02.png")),
+        (a | b) + patchwork::plot_annotation(tag_levels = c("A", "B")),
+        width = 20,
+        height = 7,
+        height = 7
+    )
 }

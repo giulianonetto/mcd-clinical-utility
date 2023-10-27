@@ -46,9 +46,14 @@ plot_delta_treated <- function(fit, .color, .label) {
 }
 
 plot_net_benefit_untreated <- function(fit, .color, .label) {
-    plot_df <- fit$nb_untreated
-    if (is.null(plot_df)) {
-        plot_df <- compute_nb_untreated(fit)
+    if (is.null(fit$nb_untreated)) {
+        fit$nb_untreated <- compute_nb_untreated(fit)
+    }
+
+    if (is.data.frame(fit$nb_untreated)) {
+        plot_df <- fit$nb_untreated
+    } else {
+        plot_df <- fit$nb_untreated$df
     }
 
     .colors <- get_color_values(.color = .color, .label = .label)
@@ -155,10 +160,15 @@ plot_evpi <- function(fit, .color, .label) {
     })
 }
 
-plot_trade_off <- function(fit, .color, .label, max_abs_value = NULL, max_abs_value_tol = 5) {
-    plot_df <- fit$nb_untreated
-    if (is.null(plot_df)) {
-        plot_df <- compute_nb_untreated(fit)
+plot_trade_off_negative <- function(fit, .color, .label, max_abs_value = NULL, max_abs_value_tol = 10) {
+    if (is.null(fit$nb_untreated)) {
+        fit$nb_untreated <- compute_nb_untreated(fit)
+    }
+
+    if (is.data.frame(fit$nb_untreated)) {
+        plot_df <- fit$nb_untreated
+    } else {
+        plot_df <- fit$nb_untreated$df
     }
 
     .colors <- get_color_values(.color = .color, .label = .label)
@@ -169,28 +179,23 @@ plot_trade_off <- function(fit, .color, .label, max_abs_value = NULL, max_abs_va
     }
     if (is.null(max_abs_value)) {
         max_abs_value <- pmin(
-            max(
-                c(
-                    abs(plot_df$upper),
-                    abs(plot_df$lower)
-                )
-            ),
+            max(abs(plot_df$upper_trade_off_negative)),
             max_abs_value_tol
         )
     }
-    x_breaks <- seq(-max_abs_value, max_abs_value, by = 1)
+    x_breaks <- seq(0, max_abs_value, by = 1)
     plot_df %>%
         ggplot2::ggplot(
             ggplot2::aes(
                 x = thr,
-                y = estimate_trade_off,
-                ymin = lower_trade_off,
-                ymax = upper_trade_off
+                y = estimate_trade_off_negative,
+                ymin = lower_trade_off_negative,
+                ymax = upper_trade_off_negative
             )
         ) +
         ggplot2::geom_ribbon(alpha = 0.5, fill = .colors[.label]) +
         ggplot2::geom_line(linewidth = 1.5, ggplot2::aes(color = .label)) +
-        ggplot2::coord_cartesian(ylim = c(-max_abs_value, max_abs_value)) +
+        ggplot2::coord_cartesian(ylim = c(-0.01, max_abs_value)) +
         ggplot2::theme_bw(base_size = 24) +
         ggplot2::theme(legend.position = c(.15, .85)) +
         ggplot2::labs(
@@ -209,5 +214,199 @@ plot_trade_off <- function(fit, .color, .label, max_abs_value = NULL, max_abs_va
         ggplot2::scale_color_manual(
             values = .colors,
             name = NULL
+        )
+}
+
+combine_trade_off_negative_plots <- function(
+    pathways_dca_results,
+    output_dir,
+    .colors,
+    legend_order,
+    pathways = NULL,
+    min_p_useful = 0.8) {
+    trade_off_plots <- purrr::map(pathways_dca_results, ~ .x$trade_off_negative)
+    trade_off_plots <- trade_off_plots[legend_order]
+    df <- purrr::map_df(
+        trade_off_plots,
+        ~ .x$data %>%
+            dplyr::filter(thr %in% c(0.02, 0.03, 0.04, 0.05), p_useful > min_p_useful) %>%
+            dplyr::select(thr, contains("trade_off")),
+        .id = "pathway"
+    )
+    df %>%
+        dplyr::mutate(
+            x = factor(
+                paste0(thr * 100, "%")
+            ),
+            pathway = factor(
+                as.character(pathway),
+                levels = legend_order
+            )
+        ) %>%
+        ggplot2::ggplot(
+            ggplot2::aes(
+                x = x,
+                y = estimate_trade_off_negative,
+                ymin = lower_trade_off_negative,
+                ymax = upper_trade_off_negative
+            )
+        ) +
+        ggplot2::geom_linerange(
+            aes(color = pathway),
+            position = ggplot2::position_dodge(width = .65),
+            linewidth = 2
+        ) +
+        ggplot2::geom_point(
+            ggplot2::aes(color = pathway),
+            position = ggplot2::position_dodge(width = .65),
+            size = 5
+        ) +
+        ggplot2::geom_hline(
+            yintercept = 0,
+            linetype = 2,
+            linewidth = 1,
+            alpha = 0.5
+        ) +
+        ggplot2::theme_bw(base_size = 24) +
+        # ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
+        ggplot2::scale_y_continuous(
+            breaks = scales::pretty_breaks(10)
+        ) +
+        ggplot2::scale_color_manual(
+            values = .colors,
+            breaks = legend_order
+        ) +
+        ggplot2::labs(
+            x = "Decision threshold",
+            y = "# tests",
+            title = "MCED test trade-off",
+            subtitle = "Number of tests for each additional net true negative",
+            color = NULL
+        )
+}
+
+plot_trade_off_positive <- function(fit, .color, .label, max_abs_value = NULL, max_abs_value_tol = 200) {
+    plot_df <- compute_trade_off_positive(fit = fit)
+
+    .colors <- get_color_values(.color = .color, .label = .label)
+    label_function <- function(x) {
+        x_lab <- paste0(x / 1000, "K")
+        x_lab[x == 0L] <- "0"
+        return(x_lab)
+    }
+    if (is.null(max_abs_value)) {
+        max_abs_value <- min(
+            max(abs(plot_df$upper_trade_off_positive)),
+            max_abs_value_tol
+        )
+    }
+    x_breaks <- seq(0, max_abs_value, by = 1)
+    plot_df %>%
+        ggplot2::ggplot(
+            ggplot2::aes(
+                x = thr,
+                y = estimate_trade_off_positive,
+                ymin = lower_trade_off_positive,
+                ymax = upper_trade_off_positive
+            )
+        ) +
+        ggplot2::geom_ribbon(alpha = 0.5, fill = .colors[.label]) +
+        ggplot2::geom_line(linewidth = 1.5, ggplot2::aes(color = .label)) +
+        ggplot2::coord_cartesian(ylim = c(-0.01, max_abs_value)) +
+        ggplot2::theme_bw(base_size = 24) +
+        ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::labs(
+            x = "Decision threshold",
+            y = "# tests",
+            title = "MCED test trade-off",
+            subtitle = "Number of tests for each additional net true positive"
+        ) +
+        ggplot2::scale_x_continuous(
+            labels = scales::label_percent(accuracy = 1),
+            breaks = seq(0, 0.07, by = 0.01)
+        ) +
+        ggplot2::scale_y_continuous(
+            breaks = scales::pretty_breaks(10)
+        ) +
+        ggplot2::scale_color_manual(
+            values = .colors,
+            name = NULL
+        )
+}
+
+combine_trade_off_positive_plots <- function(
+    pathways_dca_results,
+    output_dir,
+    .colors,
+    legend_order,
+    pathways = NULL,
+    min_p_useful = 0.8) {
+    trade_off_plots <- purrr::map(pathways_dca_results, ~ .x$trade_off_positive)
+    trade_off_plots <- trade_off_plots[legend_order]
+    df <- purrr::map_df(
+        trade_off_plots,
+        ~ .x$data %>%
+            dplyr::filter(thr %in% c(0.02, 0.03, 0.04, 0.05)) %>%
+            dplyr::select(thr, contains("trade_off")),
+        .id = "pathway"
+    )
+    p_useful_data <- purrr::map_df(pathways_dca_results, ~ .x$p_useful$data, .id = "pathway") %>%
+        dplyr::rename(thr := threshold, p_useful := prob)
+    dplyr::left_join(
+        df,
+        p_useful_data,
+        by = c("pathway", "thr")
+    ) %>%
+        dplyr::filter(p_useful > min_p_useful) %>%
+        dplyr::mutate(
+            x = factor(
+                paste0(thr * 100, "%")
+            ),
+            pathway = factor(
+                as.character(pathway),
+                levels = legend_order
+            )
+        ) %>%
+        ggplot2::ggplot(
+            ggplot2::aes(
+                x = x,
+                y = estimate_trade_off_positive,
+                ymin = lower_trade_off_positive,
+                ymax = upper_trade_off_positive
+            )
+        ) +
+        ggplot2::geom_linerange(
+            aes(color = pathway),
+            position = ggplot2::position_dodge(width = .65),
+            linewidth = 2
+        ) +
+        ggplot2::geom_point(
+            ggplot2::aes(color = pathway),
+            position = ggplot2::position_dodge(width = .65),
+            size = 5
+        ) +
+        ggplot2::geom_hline(
+            yintercept = 0,
+            linetype = 2,
+            linewidth = 1,
+            alpha = 0.5
+        ) +
+        ggplot2::theme_bw(base_size = 24) +
+        # ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
+        ggplot2::scale_y_continuous(
+            breaks = scales::pretty_breaks(10)
+        ) +
+        ggplot2::scale_color_manual(
+            values = .colors,
+            breaks = legend_order
+        ) +
+        ggplot2::labs(
+            x = "Decision threshold",
+            y = "# tests",
+            title = "MCED test trade-off",
+            subtitle = "Number of tests for each additional net true positive",
+            color = NULL
         )
 }

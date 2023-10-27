@@ -1,0 +1,457 @@
+pathway	prob	threshold	decision_strategy	label
+Overall	0	1e-9	mced_test	
+Overall	0	0.001	mced_test	
+Overall	0	0.002	mced_test	
+Overall	0	0.003	mced_test	
+Overall	0	0.004	mced_test	
+Overall	0	0.005	mced_test	
+Overall	0	0.006	mced_test	
+Overall	0	0.007	mced_test	
+Overall	0	0.008	mced_test	
+Overall	0	0.009000000000000001	mced_test	
+Overall	0	0.01	mced_test	
+Overall	0	0.011	mced_test	
+Overall	0	0.012	mced_test	
+Overall	0	0.013000000000000001	mced_test	
+Overall	0	0.014	mced_test	
+Overall	0	0.015	mced_test	
+Overall	0	0.016	mced_test	
+Overall	8e-5	0.017	mced_test	
+Overall	6.8e-4	0.018000000000000002	mced_test	
+Overall	0.00472	0.019	mced_test	
+Overall	0.01936	0.02	mced_test	
+Overall	0.05846	0.021	mced_test	
+Overall	0.14656	0.022	mced_test	
+Overall	0.28262	0.023	mced_test	
+Overall	0.46268	0.024	mced_test	
+Overall	0.64576	0.025	mced_test	
+Overall	0.79578	0.026000000000000002	mced_test	
+Overall	0.89696	0.027	mced_test	
+Overall	0.95366	0.028	mced_test	
+Overall	0.98258	0.029	mced_test	
+Overall	0.99408	0.03	mced_test	
+Overall	0.99824	0.031	mced_test	
+Overall	0.99978	0.032	mced_test	
+Overall	0.99978	0.033	mced_test	
+Overall	1	0.034	mced_test	
+Overall	1	0.035	mced_test	
+Overall	1	0.036000000000000004	mced_test	
+Overall	1	0.037	mced_test	
+Overall	1	0.038	mced_test	
+Overall	1	0.039	mced_test	
+Overall	1	0.04	mced_test	
+Overall	1	0.041	mced_test	
+Overall	1	0.042	mced_test	
+Overall	1	0.043000000000000003	mced_test	
+Overall	1	0.044	mced_test	
+Overall	1	0.045	mced_test	
+Overall	1	0.046	mced_test	
+Overall	1	0.047	mced_test	
+Overall	1	0.048	mced_test	
+Overall	1	0.049	mced_test	
+Overall	1	0.05	mced_test	
+Overall	1	0.051000000000000004	mced_test	
+Overall	1	0.052000000000000005	mced_test	
+Overall	1	0.053	mced_test	
+Overall	1	0.054	mced_test	
+Overall	1	0.055	mced_test	
+Overall	1	0.056	mced_test	
+Overall	1	0.057	mced_test	
+Overall	1	0.058	mced_test	
+Overall	1	0.059000000000000004	mced_test	
+Overall	1	0.06	mced_test	
+Overall	1	0.061	mced_test	
+Overall	1	0.062	mced_test	
+Overall	1	0.063	mced_test	
+Overall	1	0.064	mced_test	
+Overall	1	0.065	mced_test	
+Overall	1	0.066	mced_test	
+Overall	1	0.067	mced_test	
+Overall	1	0.068	mced_test	
+Overall	1	0.069	mced_test	
+Overall	1	0.07	mced_test	
+Overall	1	0.07100000000000001	mced_test	
+Overall	1	0.07200000000000001	mced_test	
+Overall	1	0.073	mced_test	
+Overall	1	0.074	mced_test	
+Overall	1	0.075	mced_test	
+Gynaecology	0	1e-9	mced_test	
+Gynaecology	0	0.001	mced_test	
+Gynaecology	0	0.002	mced_test	
+Gynaecology	0	0.003	mced_test	
+Gynaecology	0	0.004	mced_test	
+Gynaecology	0	0.005	mced_test	
+Gynaecology	0	0.006	mced_test	
+Gynaecology	2e-5	0.007	mced_test	
+Gynaecology	0	0.008	mced_test	
+Gynaecology	1.2e-4	0.009000000000000001	mced_test	
+Gynaecology	8e-4	0.01	mced_test	
+Gynaecology	0.0024	0.011	mced_test	
+Gynaecology	0.00914	0.012	mced_test	
+Gynaecology	0.0226	0.013000000000000001	mced_test	
+Gynaecology	0.04896	0.014	mced_test	
+Gynaecology	0.09332	0.015	mced_test	
+Gynaecology	0.15768	0.016	mced_test	
+Gynaecology	0.23978	0.017	mced_test	
+Gynaecology	0.3379	0.018000000000000002	mced_test	
+Gynaecology	0.44678	0.019	mced_test	
+Gynaecology	0.55644	0.02	mced_test	
+Gynaecology	0.65456	0.021	mced_test	
+Gynaecology	0.74408	0.022	mced_test	
+Gynaecology	0.81664	0.023	mced_test	
+Gynaecology	0.87486	0.024	mced_test	
+Gynaecology	0.9148	0.025	mced_test	
+Gynaecology	0.94528	0.026000000000000002	mced_test	
+Gynaecology	0.96624	0.027	mced_test	
+Gynaecology	0.97936	0.028	mced_test	
+Gynaecology	0.98848	0.029	mced_test	
+Gynaecology	0.9938	0.03	mced_test	
+Gynaecology	0.99656	0.031	mced_test	
+Gynaecology	0.99816	0.032	mced_test	
+Gynaecology	0.99896	0.033	mced_test	
+Gynaecology	0.99954	0.034	mced_test	
+Gynaecology	0.99976	0.035	mced_test	
+Gynaecology	0.99986	0.036000000000000004	mced_test	
+Gynaecology	0.99994	0.037	mced_test	
+Gynaecology	0.99998	0.038	mced_test	
+Gynaecology	1	0.039	mced_test	
+Gynaecology	1	0.04	mced_test	
+Gynaecology	1	0.041	mced_test	
+Gynaecology	1	0.042	mced_test	
+Gynaecology	1	0.043000000000000003	mced_test	
+Gynaecology	1	0.044	mced_test	
+Gynaecology	1	0.045	mced_test	
+Gynaecology	1	0.046	mced_test	
+Gynaecology	1	0.047	mced_test	
+Gynaecology	1	0.048	mced_test	
+Gynaecology	1	0.049	mced_test	
+Gynaecology	1	0.05	mced_test	
+Gynaecology	1	0.051000000000000004	mced_test	
+Gynaecology	1	0.052000000000000005	mced_test	
+Gynaecology	1	0.053	mced_test	
+Gynaecology	1	0.054	mced_test	
+Gynaecology	1	0.055	mced_test	
+Gynaecology	1	0.056	mced_test	
+Gynaecology	1	0.057	mced_test	
+Gynaecology	1	0.058	mced_test	
+Gynaecology	1	0.059000000000000004	mced_test	
+Gynaecology	1	0.06	mced_test	
+Gynaecology	1	0.061	mced_test	
+Gynaecology	1	0.062	mced_test	
+Gynaecology	1	0.063	mced_test	
+Gynaecology	1	0.064	mced_test	
+Gynaecology	1	0.065	mced_test	
+Gynaecology	1	0.066	mced_test	
+Gynaecology	1	0.067	mced_test	
+Gynaecology	1	0.068	mced_test	
+Gynaecology	1	0.069	mced_test	
+Gynaecology	1	0.07	mced_test	
+Gynaecology	1	0.07100000000000001	mced_test	
+Gynaecology	1	0.07200000000000001	mced_test	
+Gynaecology	1	0.073	mced_test	
+Gynaecology	1	0.074	mced_test	
+Gynaecology	1	0.075	mced_test	
+Lower GI	0	1e-9	mced_test	
+Lower GI	0	0.001	mced_test	
+Lower GI	0	0.002	mced_test	
+Lower GI	0	0.003	mced_test	
+Lower GI	0	0.004	mced_test	
+Lower GI	0	0.005	mced_test	
+Lower GI	0	0.006	mced_test	
+Lower GI	0	0.007	mced_test	
+Lower GI	0	0.008	mced_test	
+Lower GI	0	0.009000000000000001	mced_test	
+Lower GI	0	0.01	mced_test	
+Lower GI	0	0.011	mced_test	
+Lower GI	1e-4	0.012	mced_test	
+Lower GI	6e-4	0.013000000000000001	mced_test	
+Lower GI	0.0026	0.014	mced_test	
+Lower GI	0.0087	0.015	mced_test	
+Lower GI	0.02412	0.016	mced_test	
+Lower GI	0.0535	0.017	mced_test	
+Lower GI	0.1069	0.018000000000000002	mced_test	
+Lower GI	0.18354	0.019	mced_test	
+Lower GI	0.28546	0.02	mced_test	
+Lower GI	0.40888	0.021	mced_test	
+Lower GI	0.5297	0.022	mced_test	
+Lower GI	0.6479	0.023	mced_test	
+Lower GI	0.75334	0.024	mced_test	
+Lower GI	0.83322	0.025	mced_test	
+Lower GI	0.89452	0.026000000000000002	mced_test	
+Lower GI	0.9379	0.027	mced_test	
+Lower GI	0.96364	0.028	mced_test	
+Lower GI	0.97976	0.029	mced_test	
+Lower GI	0.98996	0.03	mced_test	
+Lower GI	0.99484	0.031	mced_test	
+Lower GI	0.99804	0.032	mced_test	
+Lower GI	0.99904	0.033	mced_test	
+Lower GI	0.99958	0.034	mced_test	
+Lower GI	0.9998	0.035	mced_test	
+Lower GI	0.99996	0.036000000000000004	mced_test	
+Lower GI	0.99998	0.037	mced_test	
+Lower GI	1	0.038	mced_test	
+Lower GI	1	0.039	mced_test	
+Lower GI	1	0.04	mced_test	
+Lower GI	1	0.041	mced_test	
+Lower GI	1	0.042	mced_test	
+Lower GI	1	0.043000000000000003	mced_test	
+Lower GI	1	0.044	mced_test	
+Lower GI	1	0.045	mced_test	
+Lower GI	1	0.046	mced_test	
+Lower GI	1	0.047	mced_test	
+Lower GI	1	0.048	mced_test	
+Lower GI	1	0.049	mced_test	
+Lower GI	1	0.05	mced_test	
+Lower GI	1	0.051000000000000004	mced_test	
+Lower GI	1	0.052000000000000005	mced_test	
+Lower GI	1	0.053	mced_test	
+Lower GI	1	0.054	mced_test	
+Lower GI	1	0.055	mced_test	
+Lower GI	1	0.056	mced_test	
+Lower GI	1	0.057	mced_test	
+Lower GI	1	0.058	mced_test	
+Lower GI	1	0.059000000000000004	mced_test	
+Lower GI	1	0.06	mced_test	
+Lower GI	1	0.061	mced_test	
+Lower GI	1	0.062	mced_test	
+Lower GI	1	0.063	mced_test	
+Lower GI	1	0.064	mced_test	
+Lower GI	1	0.065	mced_test	
+Lower GI	1	0.066	mced_test	
+Lower GI	1	0.067	mced_test	
+Lower GI	1	0.068	mced_test	
+Lower GI	1	0.069	mced_test	
+Lower GI	1	0.07	mced_test	
+Lower GI	1	0.07100000000000001	mced_test	
+Lower GI	1	0.07200000000000001	mced_test	
+Lower GI	1	0.073	mced_test	
+Lower GI	1	0.074	mced_test	
+Lower GI	1	0.075	mced_test	
+Lung	0	1e-9	mced_test	
+Lung	0	0.001	mced_test	
+Lung	0	0.002	mced_test	
+Lung	0	0.003	mced_test	
+Lung	0	0.004	mced_test	
+Lung	0	0.005	mced_test	
+Lung	0	0.006	mced_test	
+Lung	0	0.007	mced_test	
+Lung	0	0.008	mced_test	
+Lung	0	0.009000000000000001	mced_test	
+Lung	0	0.01	mced_test	
+Lung	0	0.011	mced_test	
+Lung	0	0.012	mced_test	
+Lung	0	0.013000000000000001	mced_test	
+Lung	0	0.014	mced_test	
+Lung	0	0.015	mced_test	
+Lung	0	0.016	mced_test	
+Lung	0	0.017	mced_test	
+Lung	0	0.018000000000000002	mced_test	
+Lung	0	0.019	mced_test	
+Lung	0	0.02	mced_test	
+Lung	0	0.021	mced_test	
+Lung	0	0.022	mced_test	
+Lung	0	0.023	mced_test	
+Lung	0	0.024	mced_test	
+Lung	0	0.025	mced_test	
+Lung	0	0.026000000000000002	mced_test	
+Lung	0	0.027	mced_test	
+Lung	0	0.028	mced_test	
+Lung	0	0.029	mced_test	
+Lung	0	0.03	mced_test	
+Lung	0	0.031	mced_test	
+Lung	0	0.032	mced_test	
+Lung	0	0.033	mced_test	
+Lung	0	0.034	mced_test	
+Lung	0	0.035	mced_test	
+Lung	0	0.036000000000000004	mced_test	
+Lung	0	0.037	mced_test	
+Lung	0	0.038	mced_test	
+Lung	0	0.039	mced_test	
+Lung	0	0.04	mced_test	
+Lung	0	0.041	mced_test	
+Lung	0	0.042	mced_test	
+Lung	0	0.043000000000000003	mced_test	
+Lung	0	0.044	mced_test	
+Lung	2e-5	0.045	mced_test	
+Lung	0	0.046	mced_test	
+Lung	0	0.047	mced_test	
+Lung	0	0.048	mced_test	
+Lung	2e-5	0.049	mced_test	
+Lung	2e-5	0.05	mced_test	
+Lung	8e-5	0.051000000000000004	mced_test	
+Lung	1e-4	0.052000000000000005	mced_test	
+Lung	1.2e-4	0.053	mced_test	
+Lung	1.8e-4	0.054	mced_test	
+Lung	2.6e-4	0.055	mced_test	
+Lung	3.4e-4	0.056	mced_test	
+Lung	3.4e-4	0.057	mced_test	
+Lung	4.4e-4	0.058	mced_test	
+Lung	6.4e-4	0.059000000000000004	mced_test	
+Lung	8.6e-4	0.06	mced_test	
+Lung	7.8e-4	0.061	mced_test	
+Lung	0.00134	0.062	mced_test	
+Lung	0.00174	0.063	mced_test	
+Lung	0.00192	0.064	mced_test	
+Lung	0.00258	0.065	mced_test	
+Lung	0.00286	0.066	mced_test	
+Lung	0.00342	0.067	mced_test	
+Lung	0.00406	0.068	mced_test	
+Lung	0.00532	0.069	mced_test	
+Lung	0.00616	0.07	mced_test	
+Lung	0.00676	0.07100000000000001	mced_test	
+Lung	0.00844	0.07200000000000001	mced_test	
+Lung	0.0111	0.073	mced_test	
+Lung	0.0134	0.074	mced_test	
+Lung	0.01468	0.075	mced_test	
+RDC	0	1e-9	mced_test	
+RDC	0	0.001	mced_test	
+RDC	0	0.002	mced_test	
+RDC	0	0.003	mced_test	
+RDC	0	0.004	mced_test	
+RDC	0	0.005	mced_test	
+RDC	0	0.006	mced_test	
+RDC	0	0.007	mced_test	
+RDC	0	0.008	mced_test	
+RDC	0	0.009000000000000001	mced_test	
+RDC	0	0.01	mced_test	
+RDC	0	0.011	mced_test	
+RDC	1.2e-4	0.012	mced_test	
+RDC	3.2e-4	0.013000000000000001	mced_test	
+RDC	6e-4	0.014	mced_test	
+RDC	0.00126	0.015	mced_test	
+RDC	0.00196	0.016	mced_test	
+RDC	0.00398	0.017	mced_test	
+RDC	0.00746	0.018000000000000002	mced_test	
+RDC	0.01114	0.019	mced_test	
+RDC	0.01782	0.02	mced_test	
+RDC	0.02652	0.021	mced_test	
+RDC	0.03914	0.022	mced_test	
+RDC	0.05542	0.023	mced_test	
+RDC	0.07208	0.024	mced_test	
+RDC	0.09718	0.025	mced_test	
+RDC	0.12228	0.026000000000000002	mced_test	
+RDC	0.1546	0.027	mced_test	
+RDC	0.19058	0.028	mced_test	
+RDC	0.22736	0.029	mced_test	
+RDC	0.27024	0.03	mced_test	
+RDC	0.31548	0.031	mced_test	
+RDC	0.36114	0.032	mced_test	
+RDC	0.40542	0.033	mced_test	
+RDC	0.46	0.034	mced_test	
+RDC	0.50578	0.035	mced_test	
+RDC	0.55212	0.036000000000000004	mced_test	
+RDC	0.59314	0.037	mced_test	
+RDC	0.64088	0.038	mced_test	
+RDC	0.67776	0.039	mced_test	
+RDC	0.7168	0.04	mced_test	
+RDC	0.75262	0.041	mced_test	
+RDC	0.78694	0.042	mced_test	
+RDC	0.81494	0.043000000000000003	mced_test	
+RDC	0.83822	0.044	mced_test	
+RDC	0.86452	0.045	mced_test	
+RDC	0.883	0.046	mced_test	
+RDC	0.90216	0.047	mced_test	
+RDC	0.9167	0.048	mced_test	
+RDC	0.93104	0.049	mced_test	
+RDC	0.94248	0.05	mced_test	
+RDC	0.95268	0.051000000000000004	mced_test	
+RDC	0.96064	0.052000000000000005	mced_test	
+RDC	0.96758	0.053	mced_test	
+RDC	0.97482	0.054	mced_test	
+RDC	0.97982	0.055	mced_test	
+RDC	0.98378	0.056	mced_test	
+RDC	0.98624	0.057	mced_test	
+RDC	0.98928	0.058	mced_test	
+RDC	0.99158	0.059000000000000004	mced_test	
+RDC	0.99402	0.06	mced_test	
+RDC	0.9944	0.061	mced_test	
+RDC	0.99528	0.062	mced_test	
+RDC	0.9968	0.063	mced_test	
+RDC	0.99728000000000006	0.064	mced_test	
+RDC	0.99766	0.065	mced_test	
+RDC	0.99844	0.066	mced_test	
+RDC	0.99904	0.067	mced_test	
+RDC	0.99928	0.068	mced_test	
+RDC	0.99926	0.069	mced_test	
+RDC	0.99936	0.07	mced_test	
+RDC	0.99942	0.07100000000000001	mced_test	
+RDC	0.99958	0.07200000000000001	mced_test	
+RDC	0.99982	0.073	mced_test	
+RDC	0.99988	0.074	mced_test	
+RDC	0.99988	0.075	mced_test	
+Upper GI	0	1e-9	mced_test	
+Upper GI	0	0.001	mced_test	
+Upper GI	0	0.002	mced_test	
+Upper GI	0.00108	0.003	mced_test	
+Upper GI	0.00804	0.004	mced_test	
+Upper GI	0.02898	0.005	mced_test	
+Upper GI	0.07832	0.006	mced_test	
+Upper GI	0.15886	0.007	mced_test	
+Upper GI	0.2714	0.008	mced_test	
+Upper GI	0.39358	0.009000000000000001	mced_test	
+Upper GI	0.5278	0.01	mced_test	
+Upper GI	0.64562	0.011	mced_test	
+Upper GI	0.74424	0.012	mced_test	
+Upper GI	0.82038	0.013000000000000001	mced_test	
+Upper GI	0.87942	0.014	mced_test	
+Upper GI	0.9224	0.015	mced_test	
+Upper GI	0.95138	0.016	mced_test	
+Upper GI	0.97158	0.017	mced_test	
+Upper GI	0.98292	0.018000000000000002	mced_test	
+Upper GI	0.9897	0.019	mced_test	
+Upper GI	0.99482	0.02	mced_test	
+Upper GI	0.9969	0.021	mced_test	
+Upper GI	0.9981	0.022	mced_test	
+Upper GI	0.999	0.023	mced_test	
+Upper GI	0.99948	0.024	mced_test	
+Upper GI	0.99968	0.025	mced_test	
+Upper GI	0.99992	0.026000000000000002	mced_test	
+Upper GI	0.99994	0.027	mced_test	
+Upper GI	0.99998	0.028	mced_test	
+Upper GI	0.99996	0.029	mced_test	
+Upper GI	0.99998	0.03	mced_test	
+Upper GI	1	0.031	mced_test	
+Upper GI	1	0.032	mced_test	
+Upper GI	1	0.033	mced_test	
+Upper GI	1	0.034	mced_test	
+Upper GI	1	0.035	mced_test	
+Upper GI	1	0.036000000000000004	mced_test	
+Upper GI	1	0.037	mced_test	
+Upper GI	1	0.038	mced_test	
+Upper GI	1	0.039	mced_test	
+Upper GI	1	0.04	mced_test	
+Upper GI	1	0.041	mced_test	
+Upper GI	1	0.042	mced_test	
+Upper GI	1	0.043000000000000003	mced_test	
+Upper GI	1	0.044	mced_test	
+Upper GI	1	0.045	mced_test	
+Upper GI	1	0.046	mced_test	
+Upper GI	1	0.047	mced_test	
+Upper GI	1	0.048	mced_test	
+Upper GI	1	0.049	mced_test	
+Upper GI	1	0.05	mced_test	
+Upper GI	1	0.051000000000000004	mced_test	
+Upper GI	1	0.052000000000000005	mced_test	
+Upper GI	1	0.053	mced_test	
+Upper GI	1	0.054	mced_test	
+Upper GI	1	0.055	mced_test	
+Upper GI	1	0.056	mced_test	
+Upper GI	1	0.057	mced_test	
+Upper GI	1	0.058	mced_test	
+Upper GI	1	0.059000000000000004	mced_test	
+Upper GI	1	0.06	mced_test	
+Upper GI	1	0.061	mced_test	
+Upper GI	1	0.062	mced_test	
+Upper GI	1	0.063	mced_test	
+Upper GI	1	0.064	mced_test	
+Upper GI	1	0.065	mced_test	
+Upper GI	1	0.066	mced_test	
+Upper GI	1	0.067	mced_test	
+Upper GI	1	0.068	mced_test	
+Upper GI	1	0.069	mced_test	
+Upper GI	1	0.07	mced_test	
+Upper GI	1	0.07100000000000001	mced_test	
+Upper GI	1	0.07200000000000001	mced_test	
+Upper GI	1	0.073	mced_test	
+Upper GI	1	0.074	mced_test	
+Upper GI	1	0.075	mced_test	
