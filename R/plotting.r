@@ -321,7 +321,7 @@ plot_trade_off_positive <- function(fit, .color, .label, max_abs_value = NULL, m
         ggplot2::theme(legend.position = c(.15, .85)) +
         ggplot2::labs(
             x = "Decision threshold",
-            y = "# tests",
+            y = "# tests per net true positive",
             title = "MCED test trade-off",
             subtitle = "Number of tests to refer one true cancer"
         ) +
@@ -410,7 +410,7 @@ combine_trade_off_positive_plots <- function(
         ) +
         ggplot2::labs(
             x = "Decision threshold",
-            y = "# tests",
+            y = "# tests per net true positive",
             title = "MCED test trade-off",
             subtitle = "Number of tests to refer one true cancer",
             color = NULL
