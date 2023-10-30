@@ -131,3 +131,75 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
     logger::log_info("Figures successfully created!")
     return("done")
 }
+
+run_optimizing_mced_test <- function(output_dir, l = 201) {
+    get_ntn <- function(.se, .sp, .p, .t) .sp * (1 - .p) - .p * (1 - .se) * ((1 - .t) / .t)
+    get_refer_none <- function(.p, .t) 1 * (1 - .p) - .p * (1 - 0) * ((1 - .t) / .t)
+    get_best_competitor <- function(.p, .t) {
+        x <- get_refer_none(.p = .p, .t = .t)
+        x[x < 0] <- 0
+        return(x)
+    }
+
+    compute_clinical_utility <- function(l = 201,
+                                         potential_sens_spec = seq(0, 1, length = l),
+                                         potential_prev = c(0.03, 0.04, 0.05, 0.07, 0.3),
+                                         potential_thresholds = c(0.02, 0.03, 0.05)) {
+        expand.grid(
+            se = potential_sens_spec,
+            sp = potential_sens_spec,
+            p = potential_prev,
+            thr = potential_thresholds
+        ) %>%
+            mutate(
+                ntn = get_ntn(se, sp, p, thr),
+                ntn_default = get_best_competitor(p, thr),
+                deltaNB = ntn - ntn_default,
+                useful = factor(ifelse(deltaNB > 0, "Useful", "Not useful"), levels = c("Useful", "Not useful")),
+                tradeoff = 1 / deltaNB,
+                p = fct_relabel(ordered(round(p * 100)), \(x) paste0("prevalence ", x, "%")),
+                thr = fct_relabel(ordered(round(thr * 100)), \(x) paste0(x, "%\nthreshold"))
+            )
+    }
+
+    plot_nb_gain_regions <- function(df) {
+        limits <- c(-0.01, NA)
+        df %>%
+            # filter(deltaNB > 0) %>%
+            ggplot(aes(sp, se, fill = useful)) +
+            geom_raster() +
+            facet_wrap(~thr) +
+            scale_fill_brewer(palette = "Dark2") +
+            scale_y_continuous(labels = scales::percent, breaks = scales::pretty_breaks()) +
+            scale_x_continuous(labels = scales::percent, breaks = scales::pretty_breaks()) +
+            theme_minimal(base_size = 20) +
+            theme(
+                axis.text = element_text(size = 12)
+            ) +
+            labs(
+                fill = NULL,
+                title = "Clinical utility regions",
+                x = "Specificity", y = "Sensiticity"
+            ) +
+            geom_vline(xintercept = c(0.8, 0.9), linetype = 2, linewidth = 1, alpha = 0.7) +
+            facet_grid(cols = vars(p), rows = vars(thr))
+    }
+
+    df_clinical_utility <- compute_clinical_utility(l = l)
+    p <- df_clinical_utility %>%
+        plot_nb_gain_regions()
+
+    ggplot2::ggsave(
+        here::here(file.path(output_dir, "supp_fig02.png")),
+        p,
+        width = 16, height = 7.5,
+        bg = "white"
+    )
+
+    df_clinical_utility %>%
+        dplyr::mutate(thr = stringr::str_replace_all(thr, "\n", " ")) %>%
+        dplyr::filter(deltaNB > 0) %>%
+        readr::write_tsv(
+            here::here(file.path(output_dir, "clinical-utility-ranges.tsv"))
+        )
+}

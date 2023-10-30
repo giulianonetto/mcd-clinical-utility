@@ -11,6 +11,8 @@ generate_data_from_counts|function|fd2ca9fb6fb8fe1b|||||||||||||||
 get_color_values|function|6e9e1ecc89a20d31|||||||||||||||
 get_labels_values|function|3054945fb935f527|||||||||||||||
 get_population_scaling_factor|function|f024b3fd26db3fc7|||||||||||||||
+optimizing_for_symptomatic_patients|function|c9b0599385ccda55|||||||||||||||
+optimizing_mced_test|stem|08f608b0957bfe0c|673054a774f2dc6c|84fa8921f90010a2|907168961||t19660.8790701023s|19ada6c01bbdcc40|1652532|rds|local|vector|||5.7||
 pathways_dca_results|stem|5038f00b333e183d|d36edcbf14b37c71|553c75a7221534f6|986223820||t19657.8897002439s|9064907978062c20|56|rds|local|vector|||37.087||
 plot_delta_treated|function|e42036b58bfdfa77|||||||||||||||
 plot_evpi|function|0397ff4c69904194|||||||||||||||
@@ -21,4 +23,5 @@ plot_trade_off|function|5317102405f71ac8|||||||||||||||
 plot_trade_off_negative|function|79c507939ce4ef34|||||||||||||||
 plot_trade_off_positive|function|ecacb09c3243f923|||||||||||||||
 process_extracted_data|function|d77633c2269f1158|||||||||||||||
+run_optimizing_mced_test|function|10a332c4f40276cd|||||||||||||||
 run_symplify_pathways_dca|function|4dbf4a860d2c2bbb|||||||||||||||

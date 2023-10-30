@@ -19,5 +19,11 @@ list(
       output_dir = here::here("output/"),
       n_draws = 5e4
     )
+  ),
+  tar_target(
+    name = optimizing_mced_test,
+    command = run_optimizing_mced_test(
+      output_dir = here::here("output/")
+    )
   )
 )
