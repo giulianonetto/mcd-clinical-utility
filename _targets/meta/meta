@@ -4,7 +4,7 @@ combine_trade_off_plots|function|4f57a8da95facf4b|||||||||||||||
 combine_trade_off_positive_plots|function|750f69327ab03b2a|||||||||||||||
 compute_nb_untreated|function|681ba06267afbbf8|||||||||||||||
 compute_trade_off_positive|function|fb91112a5f1d9e50|||||||||||||||
-create_final_figures|function|5815b7b63e48eccd|||||||||||||||
+create_final_figures|function|e7faf7a1c77c7c77|||||||||||||||
 create_pathways_figures|function|1fa732dbc38dbb95|||||||||||||||
 create_trade_off_figure|function|5c590adfb8545de1|||||||||||||||
 generate_data_from_counts|function|fd2ca9fb6fb8fe1b|||||||||||||||
@@ -13,7 +13,7 @@ get_labels_values|function|3054945fb935f527|||||||||||||||
 get_population_scaling_factor|function|f024b3fd26db3fc7|||||||||||||||
 optimizing_for_symptomatic_patients|function|c9b0599385ccda55|||||||||||||||
 optimizing_mced_test|stem|08f608b0957bfe0c|673054a774f2dc6c|06a13f33fa557b52|907168961||t19662.7040374845s|19ada6c01bbdcc40|1652532|rds|local|vector|||6.313||
-pathways_dca_results|stem|5038f00b333e183d|d36edcbf14b37c71|2c2552576f26e216|986223820||t19662.7047105475s|9064907978062c20|56|rds|local|vector|||38.384||
+pathways_dca_results|stem|5038f00b333e183d|d36edcbf14b37c71|a3d12a1c03aeee3a|986223820||t19662.7074971938s|9064907978062c20|56|rds|local|vector|||38.597||
 plot_delta_treated|function|e42036b58bfdfa77|||||||||||||||
 plot_evpi|function|0397ff4c69904194|||||||||||||||
 plot_net_benefit_treated|function|00daecbb618c95d1|||||||||||||||
@@ -24,4 +24,4 @@ plot_trade_off_negative|function|79c507939ce4ef34|||||||||||||||
 plot_trade_off_positive|function|ecacb09c3243f923|||||||||||||||
 process_extracted_data|function|d77633c2269f1158|||||||||||||||
 run_optimizing_mced_test|function|f18fffb151f78c61|||||||||||||||
-run_symplify_pathways_dca|function|9c8f73dcac6bfb3f|||||||||||||||
+run_symplify_pathways_dca|function|9917e52b8c7d5ff0|||||||||||||||

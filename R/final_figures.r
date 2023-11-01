@@ -27,7 +27,7 @@ create_final_figures <- function(
         "Lung",
         "RDC"
     )
-    # ground truth Net TN for testing (using point estimates only)
+    # "ground truth" Net TN for testing (using point estimates only)
     ground_truth_0.03 <- purrr::map_df(
         list(
             Overall = c(se = 0.663, sp = 0.984, p = 0.067),
@@ -49,7 +49,6 @@ create_final_figures <- function(
                 levels = legend_order
             )
         )
-    readr::write_tsv(ground_truth_0.03, "x.tsv")
 
     # Figure 1
     combined_plots <- purrr::imap(
@@ -67,13 +66,7 @@ create_final_figures <- function(
             p2 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
             p3 <- .x$dca_untreated +
                 ggplot2::labs(y = NULL, subtitle = NULL) +
-                ggplot2::guides(color = "none") +
-                ggplot2::geom_point(
-                    data = ground_truth_0.03[ground_truth_0.03$pathway == .y, ],
-                    ggplot2::aes(x = 0.03, y = ntn * 1e5),
-                    size = 3,
-                    inherit.aes = FALSE
-                )
+                ggplot2::guides(color = "none")
             (p1 | p2 | p3) +
                 patchwork::plot_layout(
                     guides = "collect",
