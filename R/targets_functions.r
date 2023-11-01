@@ -34,7 +34,7 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         setNames(vector("list", length = length(pathways)), pathways)
     for (.pathway in pathways) {
         msg <- stringr::str_glue(
-            "Analyzing the {.pathway} pathway..."
+            "Analyzing the {.pathway} pathway... "
         )
         logger::log_info(cli::col_br_blue(msg))
         extracted_data_pathway <- extracted_data[extracted_data$pathway == .pathway, ]
@@ -200,6 +200,6 @@ run_optimizing_mced_test <- function(output_dir, l = 201) {
         dplyr::mutate(thr = stringr::str_replace_all(thr, "\n", " ")) %>%
         dplyr::filter(deltaNB > 0) %>%
         readr::write_tsv(
-            here::here(file.path(output_dir, "clinical-utility-ranges.tsv"))
+            here::here(file.path(output_dir, "clinical-utility-regions.tsv"))
         )
 }
