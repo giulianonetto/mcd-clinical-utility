@@ -176,7 +176,7 @@ run_optimizing_mced_test <- function(output_dir, l = 201) {
             theme(
                 axis.text.y = element_text(size = 12),
                 legend.position = "top",
-                axis.text.x = element_text(size = 11)
+                axis.text.x = element_text(size = 12)
             ) +
             labs(
                 fill = NULL,
