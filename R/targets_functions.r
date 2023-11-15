@@ -174,7 +174,9 @@ run_optimizing_mced_test <- function(output_dir, l = 201) {
             scale_x_continuous(labels = scales::percent, breaks = scales::pretty_breaks()) +
             theme_minimal(base_size = 20) +
             theme(
-                axis.text = element_text(size = 12)
+                axis.text.y = element_text(size = 12),
+                legend.position = "top",
+                axis.text.x = element_text(size = 11)
             ) +
             labs(
                 fill = NULL,
@@ -192,7 +194,7 @@ run_optimizing_mced_test <- function(output_dir, l = 201) {
     ggplot2::ggsave(
         here::here(file.path(output_dir, "supp_fig02.png")),
         p,
-        width = 16, height = 7.5,
+        width = 15, height = 8,
         bg = "white"
     )
 
