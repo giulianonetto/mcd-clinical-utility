@@ -178,7 +178,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             ggplot(aes(sp, se, fill = "Clinical utility region")) +
             geom_raster() +
             facet_wrap(~thr) +
-            scale_fill_manual(values = c("#4679b4", "#ffffff")) +
+            scale_fill_manual(values = "#c0c0c0") +
             scale_color_manual(values = .colors) +
             scale_y_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
             scale_x_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
