@@ -132,7 +132,16 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
     return("done")
 }
 
-run_optimizing_mced_test <- function(output_dir, l = 201) {
+run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201) {
+    .colors <- c(
+        "Overall" = "#1B9E77",
+        "Gynaecology" = "#8d36f0",
+        "Lower GI" = "#0e4674",
+        "Lung" = "#1c87df",
+        "RDC" = "#E7298A",
+        "Upper GI" = "#D95F02"
+    )
+
     get_ntn <- function(.se, .sp, .p, .t) .sp * (1 - .p) - .p * (1 - .se) * ((1 - .t) / .t)
     get_refer_none <- function(.p, .t) 1 * (1 - .p) - .p * (1 - 0) * ((1 - .t) / .t)
     get_best_competitor <- function(.p, .t) {
@@ -143,7 +152,7 @@ run_optimizing_mced_test <- function(output_dir, l = 201) {
 
     compute_clinical_utility <- function(l = 201,
                                          potential_sens_spec = seq(0, 1, length = l),
-                                         potential_prev = c(0.03, 0.04, 0.05, 0.07, 0.3),
+                                         potential_prev = c(0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.3),
                                          potential_thresholds = c(0.02, 0.03, 0.05)) {
         expand.grid(
             se = potential_sens_spec,
@@ -165,36 +174,50 @@ run_optimizing_mced_test <- function(output_dir, l = 201) {
     plot_nb_gain_regions <- function(df) {
         limits <- c(-0.01, NA)
         df %>%
-            # filter(deltaNB > 0) %>%
-            ggplot(aes(sp, se, fill = useful)) +
+            filter(useful == "Useful") %>%
+            ggplot(aes(sp, se, fill = "Clinical utility region")) +
             geom_raster() +
             facet_wrap(~thr) +
-            scale_fill_brewer(palette = "Dark2") +
-            scale_y_continuous(labels = scales::percent, breaks = scales::pretty_breaks()) +
-            scale_x_continuous(labels = scales::percent, breaks = scales::pretty_breaks()) +
+            scale_fill_manual(values = c("#4679b4", "#ffffff")) +
+            scale_color_manual(values = .colors) +
+            scale_y_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
+            scale_x_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
             theme_minimal(base_size = 20) +
             theme(
                 axis.text.y = element_text(size = 12),
                 legend.position = "top",
-                axis.text.x = element_text(size = 12)
+                axis.text.x = element_text(size = 12),
+                panel.grid.major = element_line(linewidth = 0.25),
+                panel.grid.minor = element_line(linewidth = 0.1),
             ) +
             labs(
-                fill = NULL,
-                title = "Clinical utility regions",
-                x = "Specificity", y = "Sensiticity"
+                fill = NULL, color = NULL,
+                x = "Specificity (%)", y = "Sensitivity (%)"
             ) +
-            geom_vline(xintercept = c(0.8, 0.9), linetype = 2, linewidth = 1, alpha = 0.7) +
+            # geom_vline(xintercept = c(0.8, 0.9), linetype = 2, linewidth = 1, alpha = 0.7) +
             facet_grid(cols = vars(p), rows = vars(thr))
     }
 
     df_clinical_utility <- compute_clinical_utility(l = l)
+    extracted_data <- readr::read_tsv(symplify_pathways_data, show_col_types = FALSE) %>%
+        dplyr::mutate(
+            p = ordered(paste0("prevalence ", round(100 * D / N), "%"), levels = levels(df_clinical_utility$p)),
+            thr = ordered("3%\nthreshold", levels = levels(df_clinical_utility$thr))
+        )
+
     p <- df_clinical_utility %>%
-        plot_nb_gain_regions()
+        plot_nb_gain_regions() +
+        ggplot2::geom_point(
+            data = extracted_data,
+            ggplot2::aes(x = sp, y = se, color = pathway),
+            inherit.aes = FALSE,
+            size = 3
+        )
 
     ggplot2::ggsave(
         here::here(file.path(output_dir, "supp_fig02.png")),
         p,
-        width = 15, height = 8,
+        width = 16, height = 8,
         bg = "white"
     )
 

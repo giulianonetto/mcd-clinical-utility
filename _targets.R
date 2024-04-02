@@ -23,6 +23,7 @@ list(
   tar_target(
     name = optimizing_mced_test,
     command = run_optimizing_mced_test(
+      symplify_pathways_data = here("data/symplify-pathways.tsv"),
       output_dir = here::here("output/")
     )
   )
