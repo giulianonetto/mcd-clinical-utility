@@ -174,11 +174,39 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
     plot_nb_gain_regions <- function(df) {
         limits <- c(-0.01, NA)
         df %>%
-            filter(useful == "Useful") %>%
-            ggplot(aes(sp, se, fill = "Clinical utility region")) +
-            geom_raster() +
-            facet_wrap(~thr) +
+            mutate(
+                tradeoff2 = case_when(
+                    tradeoff < 0 ~ NA,
+                    tradeoff == 0 ~ "0",
+                    tradeoff <= 10 ~ "10",
+                    tradeoff <= 50 ~ "50",
+                    tradeoff <= 100 ~ "100",
+                    tradeoff <= 500 ~ "500",
+                    tradeoff <= 1000 ~ "1000",
+                    tradeoff <= 2000 ~ "5000",
+                    TRUE ~ ">5000",
+                ),
+                tradeoff2 = factor(
+                    tradeoff,
+                    levels = c("0", "10", "50", "100", "500", "1000", "5000", ">5000"),
+                    ordered = TRUE
+                )
+            ) %>%
+            ggplot(aes(sp, se)) +
+            geom_raster(
+                data = . %>% dplyr::filter(useful == "Useful"),
+                ggplot2::aes(fill = tradeoff)
+            ) +
+            scale_fill_viridis_b(limits = c(0, 100), breaks = seq(1, 10, 1), direction = -1, name = "Tradeoff") +
+            ggnewscale::new_scale_fill() +
+            geom_raster(
+                data = . %>% dplyr::filter(useful == "Not useful"),
+                ggplot2::aes(fill = "Not useful"),
+                show.legend = FALSE
+            ) +
+            # scale_fill_manual(values = "#c0c0c0") +
             scale_fill_manual(values = "#c0c0c0") +
+            facet_wrap(~thr) +
             scale_color_manual(values = .colors) +
             scale_y_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
             scale_x_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
@@ -189,6 +217,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
                 axis.text.x = element_text(size = 12),
                 panel.grid.major = element_line(linewidth = 0.25),
                 panel.grid.minor = element_line(linewidth = 0.1),
+                legend.key.width = unit(2, "cm")
             ) +
             labs(
                 fill = NULL, color = NULL,
@@ -212,6 +241,12 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             ggplot2::aes(x = sp, y = se, color = pathway),
             inherit.aes = FALSE,
             size = 3
+        ) +
+        ggplot2::geom_point(
+            data = extracted_data,
+            ggplot2::aes(x = sp, y = se),
+            inherit.aes = FALSE,
+            size = 3, pch = 21, color = "gray20"
         )
 
     ggplot2::ggsave(
