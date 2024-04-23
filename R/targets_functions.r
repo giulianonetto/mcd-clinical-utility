@@ -197,7 +197,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
                 data = . %>% dplyr::filter(useful == "Useful"),
                 ggplot2::aes(fill = tradeoff)
             ) +
-            scale_fill_viridis_b(limits = c(0, 100), breaks = seq(1, 10, 1), direction = -1, name = "Tradeoff") +
+            scale_fill_viridis_b(limits = c(0, 1000), breaks = c(1.5, 2, 4, 8, 16, 32), labels = paste0(c(1.5, 2, 4, 8, 16, 32)), direction = -1, name = "Tradeoff") +
             ggnewscale::new_scale_fill() +
             geom_raster(
                 data = . %>% dplyr::filter(useful == "Not useful"),
@@ -205,7 +205,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
                 show.legend = FALSE
             ) +
             # scale_fill_manual(values = "#c0c0c0") +
-            scale_fill_manual(values = "#c0c0c0") +
+            scale_fill_manual(values = "#dbd9d9") +
             facet_wrap(~thr) +
             scale_color_manual(values = .colors) +
             scale_y_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
@@ -247,7 +247,8 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             ggplot2::aes(x = sp, y = se),
             inherit.aes = FALSE,
             size = 3, pch = 21, color = "gray20"
-        )
+        ) +
+        ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 4.5)))
 
     ggplot2::ggsave(
         here::here(file.path(output_dir, "supp_fig02.png")),
