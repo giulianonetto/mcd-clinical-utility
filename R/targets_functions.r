@@ -136,10 +136,10 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
     .colors <- c(
         "Overall" = "#1B9E77",
         "Gynaecology" = "#8d36f0",
+        "Upper GI" = "#D95F02",
         "Lower GI" = "#0e4674",
         "Lung" = "#1c87df",
-        "RDC" = "#E7298A",
-        "Upper GI" = "#D95F02"
+        "RDC" = "#E7298A"
     )
 
     get_ntn <- function(.se, .sp, .p, .t) .sp * (1 - .p) - .p * (1 - .se) * ((1 - .t) / .t)
@@ -161,8 +161,8 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             thr = potential_thresholds
         ) %>%
             mutate(
-                ntn = get_ntn(se, sp, p, thr),
-                ntn_default = get_best_competitor(p, thr),
+                ntn = get_ntn(se, sp, p, thr) * 1e5,
+                ntn_default = get_best_competitor(p, thr) * 1e5,
                 deltaNB = ntn - ntn_default,
                 useful = factor(ifelse(deltaNB > 0, "Useful", "Not useful"), levels = c("Useful", "Not useful")),
                 tradeoff = 1 / deltaNB,
@@ -195,17 +195,23 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             ggplot(aes(sp, se)) +
             geom_raster(
                 data = . %>% dplyr::filter(useful == "Useful"),
-                ggplot2::aes(fill = tradeoff)
+                ggplot2::aes(fill = deltaNB)
             ) +
-            scale_fill_viridis_b(limits = c(0, 1000), breaks = c(1.5, 2, 4, 8, 16, 32), labels = paste0(c(1.5, 2, 4, 8, 16, 32)), direction = -1, name = "Tradeoff") +
+            scale_fill_viridis_b(
+                name = "Unnecessary referrals avoided\n(Net TN per 100K)",
+                limits = c(0, 100) * 1e3,
+                breaks = c(10, 25, 50, 75, 90) * 1e3,
+                labels = paste0(c(10, 25, 50, 75, 90), "K"),
+                direction = -1
+            ) +
             ggnewscale::new_scale_fill() +
-            geom_raster(
-                data = . %>% dplyr::filter(useful == "Not useful"),
-                ggplot2::aes(fill = "Not useful"),
-                show.legend = FALSE
-            ) +
+            # geom_raster(
+            #     data = . %>% dplyr::filter(useful == "Not useful"),
+            #     ggplot2::aes(fill = "Not useful"),
+            #     show.legend = FALSE
+            # ) +
             # scale_fill_manual(values = "#c0c0c0") +
-            scale_fill_manual(values = "#dbd9d9") +
+            scale_fill_manual(values = "#f0f0f0") +
             facet_wrap(~thr) +
             scale_color_manual(values = .colors) +
             scale_y_continuous(labels = \(x) scales::percent(x, suffix = NULL), breaks = scales::pretty_breaks()) +
@@ -214,6 +220,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             theme(
                 axis.text.y = element_text(size = 12),
                 legend.position = "top",
+                legend.title = element_text(hjust = 0.5),
                 axis.text.x = element_text(size = 12),
                 panel.grid.major = element_line(linewidth = 0.25),
                 panel.grid.minor = element_line(linewidth = 0.1),
@@ -231,8 +238,19 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
     extracted_data <- readr::read_tsv(symplify_pathways_data, show_col_types = FALSE) %>%
         dplyr::mutate(
             p = ordered(paste0("prevalence ", round(100 * D / N), "%"), levels = levels(df_clinical_utility$p)),
-            thr = ordered("3%\nthreshold", levels = levels(df_clinical_utility$thr))
+            pathway = factor(pathway, levels = names(.colors))
         )
+
+    extracted_data <- purrr::map_df(
+        c(2, 3, 5), ~ {
+            extracted_data %>%
+                dplyr::mutate(
+                    thr = paste0(.x, "%\nthreshold")
+                )
+        }
+    )
+
+    extracted_data$thr <- ordered(extracted_data$thr, levels = levels(df_clinical_utility$thr))
 
     p <- df_clinical_utility %>%
         plot_nb_gain_regions() +
@@ -240,13 +258,13 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             data = extracted_data,
             ggplot2::aes(x = sp, y = se, color = pathway),
             inherit.aes = FALSE,
-            size = 3
+            size = 3.5
         ) +
         ggplot2::geom_point(
             data = extracted_data,
             ggplot2::aes(x = sp, y = se),
             inherit.aes = FALSE,
-            size = 3, pch = 21, color = "gray20"
+            size = 3.5, pch = 21, color = "gray20"
         ) +
         ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 4.5)))
 
