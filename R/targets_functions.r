@@ -152,7 +152,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
 
     compute_clinical_utility <- function(l = 201,
                                          potential_sens_spec = seq(0, 1, length = l),
-                                         potential_prev = c(0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.3),
+                                         potential_prev = c(0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.3),
                                          potential_thresholds = c(0.02, 0.03, 0.05)) {
         expand.grid(
             se = potential_sens_spec,
@@ -166,7 +166,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
                 deltaNB = ntn - ntn_default,
                 useful = factor(ifelse(deltaNB > 0, "Useful", "Not useful"), levels = c("Useful", "Not useful")),
                 tradeoff = 1 / deltaNB,
-                p = fct_relabel(ordered(round(p * 100)), \(x) paste0("prevalence ", x, "%")),
+                p = fct_relabel(ordered(round(p * 100, 1)), \(x) paste0("prev. ", x, "%")),
                 thr = fct_relabel(ordered(round(thr * 100)), \(x) paste0(x, "%\nthreshold"))
             )
     }
@@ -237,7 +237,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
     df_clinical_utility <- compute_clinical_utility(l = l)
     extracted_data <- readr::read_tsv(symplify_pathways_data, show_col_types = FALSE) %>%
         dplyr::mutate(
-            p = ordered(paste0("prevalence ", round(100 * D / N), "%"), levels = levels(df_clinical_utility$p)),
+            p = ordered(paste0("prev. ", round(100 * D / N), "%"), levels = levels(df_clinical_utility$p)),
             pathway = factor(pathway, levels = names(.colors))
         )
 
