@@ -270,10 +270,11 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
         ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 4.5)))
 
     ggplot2::ggsave(
-        here::here(file.path(output_dir, "supp_fig02.png")),
+        here::here(file.path(output_dir, "fig02.png")),
         p,
         width = 16, height = 8,
-        bg = "white"
+        bg = "white",
+        dpi = 600
     )
 
     df_clinical_utility %>%

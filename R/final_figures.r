@@ -104,9 +104,9 @@ create_final_figures <- function(
         )
     combined_plots$Overall[[3]] <- combined_plots$Overall[[3]] +
         ggplot2::labs(
-            title = "Net true negatives",
+            title = "Unnecessary referrals\navoided",
             subtitle = stringr::str_glue(
-                "Unnecessary referrals avoided\nper {get_population_scaling_factor(as_string = TRUE)} patients"
+                "Net true negatives\nper {get_population_scaling_factor(as_string = TRUE)} patients"
             )
         ) +
         ggplot2::theme(
@@ -121,12 +121,13 @@ create_final_figures <- function(
             combined_plots$`Lower GI` /
             combined_plots$Lung /
             combined_plots$RDC
-    )
+    ) & theme(plot.margin = margin(t = 0.5, r = 2, b = 0.5, l = 1, unit = "cm"))
     ggplot2::ggsave(
         here::here(stringr::str_glue("{output_dir}/fig01.png")),
         fig01,
         width = figure_width,
-        height = figure_height
+        height = figure_height,
+        dpi = 600
     )
 
     evpi_data <- purrr::map_df(
@@ -187,7 +188,7 @@ create_final_figures <- function(
         )
 
     ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/supp_fig01.png")),
+        here::here(stringr::str_glue("{output_dir}/evpi.png")),
         supp_fig01,
         width = 10.5,
         height = 7.5
@@ -202,7 +203,7 @@ create_final_figures <- function(
     )
 
     ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/fig02.png")),
+        here::here(stringr::str_glue("{output_dir}/tradeoff.png")),
         fig02,
         width = 10.5,
         height = 7.5
