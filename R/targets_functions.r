@@ -173,6 +173,7 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
 
     plot_nb_gain_regions <- function(df) {
         limits <- c(-0.01, NA)
+        color_breaks <- c(10, 25, 50, 75, 90)
         df %>%
             mutate(
                 tradeoff2 = case_when(
@@ -200,8 +201,8 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             scale_fill_viridis_b(
                 name = "Unnecessary referrals avoided\n(Net TN per 100K)",
                 limits = c(0, 100) * 1e3,
-                breaks = c(10, 25, 50, 75, 90) * 1e3,
-                labels = paste0(c(10, 25, 50, 75, 90), "K"),
+                breaks = color_breaks * 1e3,
+                labels = paste0(color_breaks, "K"),
                 direction = -1
             ) +
             ggnewscale::new_scale_fill() +
