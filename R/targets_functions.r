@@ -284,3 +284,69 @@ run_optimizing_mced_test <- function(symplify_pathways_data, output_dir, l = 201
             here::here(file.path(output_dir, "clinical-utility-regions.tsv"))
         )
 }
+
+run_estimating_optimal_cutoff <- function(output_dir, seed = 1234567) {
+    withr::with_seed(
+        seed = seed,
+        code = {
+            n <- 100
+            preds <- seq(-4, 4, length = n)
+            noise <- rpois(n, 3e2) * sample(c(-1, 1), n, replace = TRUE)
+            ntn <- (
+                8e4 + 1e3 * preds - 7e3 * preds^2 - 1e2 * preds^3 + noise
+            )
+            error_margin <- 1.5e4
+            p <- data.frame(
+                preds = preds,
+                ntn = ntn
+            ) %>%
+                ggplot2::ggplot(ggplot2::aes(preds, ntn)) +
+                ggplot2::geom_ribbon(
+                    ggplot2::aes(ymin = ntn - error_margin, ymax = ntn + error_margin),
+                    fill = "gray80", alpha = 0.8
+                ) +
+                ggplot2::geom_line(linewidth = 1.75) +
+                ggplot2::geom_segment(
+                    x = preds[which.max(ntn)],
+                    xend = preds[which.max(ntn)],
+                    y = 0,
+                    yend = max(ntn) + 1,
+                    linetype = 2,
+                    color = "red",
+                    linewidth = 1
+                ) +
+                ggplot2::geom_point(
+                    ggplot2::aes(x = preds[which.max(ntn)], y = max(ntn)),
+                    color = "red",
+                    size = 6
+                ) +
+                ggplot2::geom_segment(
+                    x = min(preds),
+                    xend = preds[which.max(ntn)],
+                    y = max(ntn) + 1,
+                    yend = max(ntn) + 1,
+                    linetype = 2,
+                    color = "red",
+                    linewidth = 1
+                ) +
+                ggplot2::scale_y_continuous(labels = scales::comma) +
+                ggplot2::geom_hline(yintercept = 0, linetype = 2) +
+                ggplot2::theme_minimal(base_size = 20) +
+                ggplot2::labs(
+                    x = "Predicted score",
+                    y = "Net true negatives per 100K",
+                    title = "Hypothetical example of optimal cutoff estimation",
+                    subtitle = "Unnecessary referrals avoided by predicted score cutoff",
+                ) +
+                ggplot2::coord_cartesian(ylim = c(1000, 1e5))
+
+            ggplot2::ggsave(
+                here::here(file.path(output_dir, "fig03.png")),
+                p,
+                width = 10, height = 6,
+                bg = "white",
+                dpi = 600
+            )
+        }
+    )
+}

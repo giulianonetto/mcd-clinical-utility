@@ -26,5 +26,11 @@ list(
       symplify_pathways_data = here("data/symplify-pathways.tsv"),
       output_dir = here::here("output/")
     )
+  ),
+  tar_target(
+    name = estimating_optimal_cutoff,
+    command = run_estimating_optimal_cutoff(
+      output_dir = here::here("output/")
+    )
   )
 )
