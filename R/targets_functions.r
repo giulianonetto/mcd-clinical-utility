@@ -289,8 +289,10 @@ run_estimating_optimal_cutoff <- function(output_dir, seed = 1234567) {
     withr::with_seed(
         seed = seed,
         code = {
-            n <- 100
+            n <- 101
             preds <- seq(-4, 4, length = n)
+            current_cutoff <- 2
+            stopifnot("missing current cutoff in predictions" = sum(preds == current_cutoff) == 1)
             noise <- rpois(n, 3e2) * sample(c(-1, 1), n, replace = TRUE)
             ntn <- (
                 8e4 + 1e3 * preds - 7e3 * preds^2 - 1e2 * preds^3 + noise
@@ -310,35 +312,72 @@ run_estimating_optimal_cutoff <- function(output_dir, seed = 1234567) {
                     x = preds[which.max(ntn)],
                     xend = preds[which.max(ntn)],
                     y = 0,
-                    yend = max(ntn) + 1,
+                    yend = max(ntn),
                     linetype = 2,
-                    color = "red",
+                    color = "#ff2424",
                     linewidth = 1
                 ) +
                 ggplot2::geom_point(
-                    ggplot2::aes(x = preds[which.max(ntn)], y = max(ntn)),
-                    color = "red",
+                    ggplot2::aes(
+                        x = preds[which.max(ntn)], y = max(ntn),
+                        color = "updated"
+                    ),
                     size = 6
                 ) +
                 ggplot2::geom_segment(
                     x = min(preds),
                     xend = preds[which.max(ntn)],
-                    y = max(ntn) + 1,
-                    yend = max(ntn) + 1,
+                    y = max(ntn),
+                    yend = max(ntn),
                     linetype = 2,
-                    color = "red",
+                    color = "#ff2424",
+                    linewidth = 1
+                ) +
+                ggplot2::geom_segment(
+                    x = current_cutoff,
+                    xend = current_cutoff,
+                    y = 0,
+                    yend = ntn[preds == current_cutoff],
+                    linetype = 2,
+                    color = "#0077ff",
+                    linewidth = 1
+                ) +
+                ggplot2::geom_point(
+                    ggplot2::aes(
+                        x = current_cutoff, y = ntn[preds == current_cutoff],
+                        color = "current"
+                    ),
+                    size = 6
+                ) +
+                ggplot2::geom_segment(
+                    x = min(preds),
+                    xend = current_cutoff,
+                    y = ntn[preds == current_cutoff],
+                    yend = ntn[preds == current_cutoff],
+                    linetype = 2,
+                    color = "#0077ff",
                     linewidth = 1
                 ) +
                 ggplot2::scale_y_continuous(labels = scales::comma) +
+                ggplot2::scale_color_manual(
+                    values = c(
+                        current = "#0077ff",
+                        updated = "#ff2424"
+                    )
+                ) +
                 ggplot2::geom_hline(yintercept = 0, linetype = 2) +
-                ggplot2::theme_minimal(base_size = 20) +
+                ggplot2::theme_classic(base_size = 20) +
+                ggplot2::theme(
+                    legend.position = c(.9, .85)
+                ) +
                 ggplot2::labs(
                     x = "Predicted score",
                     y = "Net true negatives per 100K",
-                    title = "Hypothetical example of optimal cutoff estimation",
-                    subtitle = "Unnecessary referrals avoided by predicted score cutoff",
+                    title = "Hypothetical example of classifier cutoff updating",
+                    subtitle = "Unnecessary referrals avoided by predicted score cutoff", ,
+                    color = "Cutoff"
                 ) +
-                ggplot2::coord_cartesian(ylim = c(1000, 1e5))
+                ggplot2::coord_cartesian(ylim = c(0, 1e5), expand = FALSE)
 
             ggplot2::ggsave(
                 here::here(file.path(output_dir, "fig03.png")),
