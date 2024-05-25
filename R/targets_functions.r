@@ -14,6 +14,11 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
     ) %>%
         dplyr::rename(pathway := name)
 
+    readr::write_tsv(
+        extracted_data,
+        here::here(stringr::str_glue("{output_dir}/supp_tab_01.tsv"))
+    )
+
     .colors <- c(
         "Overall" = "#1B9E77",
         "Gynaecology" = "#8d36f0",
