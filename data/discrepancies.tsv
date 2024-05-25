@@ -1,7 +1,0 @@
-pathway	metric	reported	computed	difference
-Overall	Sp Lower	98.1	98.0	0.1
-Overall	Sp Upper	98.8	98.7	0.1
-Overall	PPV	75.5	75.1	0.4
-Overall 	PPV Lower	70.5	70.0	0.5
-Overall	PPV Upper	80.1	79.7	0.4
-Overall	D (vs sum of Ds)	368	367	1

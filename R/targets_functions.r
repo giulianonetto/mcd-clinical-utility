@@ -15,8 +15,15 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         dplyr::rename(pathway := name)
 
     readr::write_tsv(
-        extracted_data,
-        here::here(stringr::str_glue("{output_dir}/supp_tab_01.tsv"))
+        extracted_data %>% dplyr::select(
+            pathway, n, d, tp, tn, fn, fp,
+            prevalence := p,
+            sensitivity := se_hat,
+            specificity := sp_hat,
+            positive_predictive_value := ppv_hat,
+            negative_predictive_value := npv_hat
+        ),
+        here::here(stringr::str_glue("{output_dir}/supp_table_01.tsv"))
     )
 
     .colors <- c(
