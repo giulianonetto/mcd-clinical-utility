@@ -368,7 +368,7 @@ run_estimating_optimal_cutoff <- function(output_dir, seed = 1234567) {
                 ggplot2::geom_hline(yintercept = 0, linetype = 2) +
                 ggplot2::theme_classic(base_size = 20) +
                 ggplot2::theme(
-                    legend.position = c(.9, .85)
+                    legend.position = c(.9, .8)
                 ) +
                 ggplot2::labs(
                     x = "Predicted score",
