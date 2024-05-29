@@ -56,7 +56,7 @@ create_final_figures <- function(
         ~ {
             p1_breaks <- seq(0, 0.1, by = 0.01)
             if (stringr::str_to_lower(.y) == "lung") {
-                p1_breaks <- seq(0, 0.3, by = 0.05)
+                p1_breaks <- seq(0, 0.35, by = 0.05)
             }
             p1 <- .x$dca_treated +
                 ggplot2::labs(y = .y, subtitle = NULL) +
@@ -73,6 +73,9 @@ create_final_figures <- function(
                         scale = get_population_scaling_factor(),
                         big.mark = ",",
                     )
+                ) +
+                ggplot2::coord_cartesian(
+                    ylim = c(0, ifelse(stringr::str_to_lower(.y) == "lung", NA, 0.095))
                 )
             p2 <- .x$dca_untreated +
                 ggplot2::labs(y = NULL, subtitle = NULL) +

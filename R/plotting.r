@@ -25,13 +25,13 @@ plot_net_benefit_treated <- function(fit, .color, .label, .pathway) {
         )
         .breaks <- names(color_values)[ix]
         if (stringr::str_to_lower(.pathway) == "lung") {
-            legend_position <- c(.485, .2)
+            legend_position <- c(.485, .16)
         } else {
             legend_position <- c(.485, .9)
         }
     } else {
         .breaks <- names(color_values)
-        legend_position <- c(.485, .84)
+        legend_position <- c(.485, .8)
     }
     p <- bayesDCA:::plot.BayesDCA(fit) +
         ggplot2::theme_bw(base_size = 24) +
