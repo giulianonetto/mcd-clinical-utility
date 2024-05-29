@@ -65,13 +65,9 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         )
         .fit$nb_untreated <- compute_nb_untreated(.fit)
 
-        .label <- ifelse(
-            .pathway == "Overall",
-            stringr::str_glue("MCED test ({.pathway})"),
-            stringr::str_glue("MCED test ({.pathway} pathway)")
-        )
+        .label <- "Galleri test"
         .color <- .colors[[.pathway]]
-        dca_treated <- plot_net_benefit_treated(fit = .fit, .color = .color, .label = .label)
+        dca_treated <- plot_net_benefit_treated(fit = .fit, .color = .color, .label = .label, .pathway = .pathway)
         dca_untreated <- plot_net_benefit_untreated(fit = .fit, .color = .color, .label = .label)
         delta_treated <- plot_delta_treated(fit = .fit, .color = .color, .label = .label)
         p_useful <- plot_prob_useful(fit = .fit, .color = .color, .label = .label)

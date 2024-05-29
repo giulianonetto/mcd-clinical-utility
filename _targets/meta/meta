@@ -4,7 +4,7 @@ combine_trade_off_plots|function|4f57a8da95facf4b|||||||||||||||
 combine_trade_off_positive_plots|function|750f69327ab03b2a|||||||||||||||
 compute_nb_untreated|function|681ba06267afbbf8|||||||||||||||
 compute_trade_off_positive|function|fb91112a5f1d9e50|||||||||||||||
-create_final_figures|function|d8997b181b5b0ca6|||||||||||||||
+create_final_figures|function|472d77bf54e913d7|||||||||||||||
 create_pathways_figures|function|1fa732dbc38dbb95|||||||||||||||
 create_trade_off_figure|function|5c590adfb8545de1|||||||||||||||
 estimating_optimal_cutoff|stem|932072d58c72a64e|dd7d1912a19bbda9|29623248d5ec028a|-266686580||t19868.2618235429s|e42ed4625f93f45f|114|rds|local|vector|||2.743||
@@ -14,10 +14,10 @@ get_labels_values|function|3054945fb935f527|||||||||||||||
 get_population_scaling_factor|function|f024b3fd26db3fc7|||||||||||||||
 optimizing_for_symptomatic_patients|function|c9b0599385ccda55|||||||||||||||
 optimizing_mced_test|stem|d7aad42f9c6bb855|0bfeebc232358183|93c7a3d0fa32442d|907168961||t19859.8329123817s|52a13ca2c671a920|2734871|rds|local|vector|||10.343||
-pathways_dca_results|stem|5038f00b333e183d|d36edcbf14b37c71|fd73be22811b40e6|986223820||t19868.8257453879s|9064907978062c20|56|rds|local|vector|||50.884||
+pathways_dca_results|stem|5038f00b333e183d|d36edcbf14b37c71|b626c235a4c06a90|986223820||t19872.8818434325s|9064907978062c20|56|rds|local|vector|||41.578||
 plot_delta_treated|function|e42036b58bfdfa77|||||||||||||||
 plot_evpi|function|0397ff4c69904194|||||||||||||||
-plot_net_benefit_treated|function|00daecbb618c95d1|||||||||||||||
+plot_net_benefit_treated|function|ad1715337f455b18|||||||||||||||
 plot_net_benefit_untreated|function|b3cf1a41abc7c9d1|||||||||||||||
 plot_prob_useful|function|a3d4396305d39d76|||||||||||||||
 plot_trade_off|function|5317102405f71ac8|||||||||||||||
@@ -26,4 +26,4 @@ plot_trade_off_positive|function|ecacb09c3243f923|||||||||||||||
 process_extracted_data|function|d77633c2269f1158|||||||||||||||
 run_estimating_optimal_cutoff|function|3fa419cebb1e8373|||||||||||||||
 run_optimizing_mced_test|function|a9a2523ac3b109d0|||||||||||||||
-run_symplify_pathways_dca|function|39e7ef5e532091cd|||||||||||||||
+run_symplify_pathways_dca|function|1afebdb9d6ec7020|||||||||||||||

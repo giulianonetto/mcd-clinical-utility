@@ -13,18 +13,54 @@ get_labels_values <- function(.label) {
         "Treat none" = "Refer none"
     )
 }
-plot_net_benefit_treated <- function(fit, .color, .label) {
+plot_net_benefit_treated <- function(fit, .color, .label, .pathway) {
     color_values <- get_color_values(.color = .color, .label = .label)
     label_values <- get_labels_values(.label = .label)
+
+    if (stringr::str_to_lower(.pathway) != "overall") {
+        ix <- stringr::str_detect(
+            str_to_lower(names(color_values)),
+            "all|none",
+            negate = TRUE
+        )
+        .breaks <- names(color_values)[ix]
+        if (stringr::str_to_lower(.pathway) == "lung") {
+            legend_position <- c(.485, .2)
+        } else {
+            legend_position <- c(.485, .9)
+        }
+    } else {
+        .breaks <- names(color_values)
+        legend_position <- c(.485, .84)
+    }
     p <- bayesDCA:::plot.BayesDCA(fit) +
         ggplot2::theme_bw(base_size = 24) +
-        ggplot2::theme(legend.position = c(.85, .85)) +
-        ggplot2::scale_color_manual(values = color_values, labels = label_values) +
-        ggplot2::scale_fill_manual(values = color_values, labels = label_values) +
+        ggplot2::theme(
+            legend.position = legend_position,
+            legend.background = ggplot2::element_rect(fill = "transparent"),
+            legend.key = ggplot2::element_rect(fill = "transparent"),
+            legend.key.width = ggplot2::unit(2.5, "lines"),
+            legend.spacing.y = ggplot2::unit(0.1, "cm")
+        ) +
+        ggplot2::scale_color_manual(
+            values = color_values, labels = label_values,
+            breaks = .breaks
+        ) +
+        ggplot2::scale_fill_manual(
+            values = color_values, labels = label_values,
+            breaks = .breaks
+        ) +
         ggplot2::coord_cartesian(ylim = c(-0.001, NA)) +
         ggplot2::scale_x_continuous(
             labels = scales::label_percent(accuracy = 1),
             breaks = seq(0, 0.07, by = 0.01)
+        ) +
+        ggplot2::guides(
+            color = ggplot2::guide_legend(
+                byrow = TRUE,
+                override.aes = list(linewidth = 2)
+            ),
+            fill = "none"
         )
     p$layers[[1]]$aes_params <- list(alpha = 0.5)
     return(p)

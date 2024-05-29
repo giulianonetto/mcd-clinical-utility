@@ -6,11 +6,11 @@ create_final_figures <- function(
     figure_width <- 24
     figure_height <- figure_width * 1.4
     column_titles_font_size <- figure_width * 2.25
-    column_subtitles_font_size <- figure_width * 1.3
+    column_subtitles_font_size <- figure_width * 1.3 * 0.9
     row_titles_font_size <- figure_width * 1.5
     x_axis_font_size <- figure_width * 0.85
     y_axis_font_size <- figure_width * 0.7
-    legend_font_size <- figure_width * 1.25
+    legend_font_size <- figure_width * 1
     lines_order <- c(
         "RDC",
         "Gynaecology",
@@ -54,6 +54,10 @@ create_final_figures <- function(
     combined_plots <- purrr::imap(
         pathways_dca_results,
         ~ {
+            p1_breaks <- seq(0, 0.1, by = 0.01)
+            if (stringr::str_to_lower(.y) == "lung") {
+                p1_breaks <- seq(0, 0.3, by = 0.05)
+            }
             p1 <- .x$dca_treated +
                 ggplot2::labs(y = .y, subtitle = NULL) +
                 ggplot2::theme(
@@ -62,18 +66,23 @@ create_final_figures <- function(
                         face = "bold",
                         vjust = 1.5
                     )
+                ) +
+                ggplot2::scale_y_continuous(
+                    breaks = p1_breaks,
+                    labels = scales::label_number(
+                        scale = get_population_scaling_factor(),
+                        big.mark = ",",
+                    )
                 )
-            p2 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
-            p3 <- .x$dca_untreated +
+            p2 <- .x$dca_untreated +
                 ggplot2::labs(y = NULL, subtitle = NULL) +
                 ggplot2::guides(color = "none")
+            p3 <- .x$p_useful + ggplot2::labs(y = NULL, subtitle = NULL)
             (p1 | p2 | p3) +
                 patchwork::plot_layout(
-                    guides = "collect",
-                    widths = c(3.5, 3, 3.5)
+                    widths = c(3.5, 3.5, 3)
                 ) &
                 ggplot2::theme(
-                    legend.position = "top",
                     legend.text = ggplot2::element_text(size = legend_font_size),
                     legend.justification = "left",
                     axis.text.x = ggplot2::element_text(size = x_axis_font_size),
@@ -84,50 +93,77 @@ create_final_figures <- function(
 
     column_title_config <- ggplot2::element_text(
         hjust = 0.5,
-        vjust = -3.5,
+        vjust = 0,
         size = column_titles_font_size,
         face = "bold"
     )
     combined_plots$Overall[[1]] <- combined_plots$Overall[[1]] +
         ggplot2::labs(
-            title = "Net benefit"
+            title = "Referred",
+            subtitle = stringr::str_glue(
+                "Net true positives\nper {get_population_scaling_factor(as_string = TRUE)} patients"
+            )
         ) +
         ggplot2::theme(
-            plot.title = column_title_config
+            plot.title = column_title_config,
+            plot.subtitle = ggplot2::element_text(hjust = 0.5, vjust = 0, size = column_subtitles_font_size)
         )
     combined_plots$Overall[[2]] <- combined_plots$Overall[[2]] +
         ggplot2::labs(
-            title = "P(useful)"
-        ) +
-        ggplot2::theme(
-            plot.title = column_title_config
-        )
-    combined_plots$Overall[[3]] <- combined_plots$Overall[[3]] +
-        ggplot2::labs(
-            title = "Unnecessary referrals\navoided",
+            title = "Unreferred",
             subtitle = stringr::str_glue(
                 "Net true negatives\nper {get_population_scaling_factor(as_string = TRUE)} patients"
             )
         ) +
         ggplot2::theme(
             plot.title = column_title_config,
-            plot.subtitle = ggplot2::element_text(hjust = 0.5, vjust = -6, size = column_subtitles_font_size)
+            plot.subtitle = ggplot2::element_text(hjust = 0.5, vjust = 0, size = column_subtitles_font_size)
+        )
+    combined_plots$Overall[[3]] <- combined_plots$Overall[[3]] +
+        ggplot2::labs(
+            title = "P(useful)"
+        ) +
+        ggplot2::theme(
+            plot.title = column_title_config
         )
 
+
+    top_text_plot <- ggplot2::ggplot() +
+        ggplot2::annotate(
+            "text",
+            x = 0,
+            y = 1,
+            label = "Net Benefit",
+            hjust = 0.5,
+            vjust = 0.5,
+            size = row_titles_font_size * 0.8,
+            fontface = "bold"
+        ) +
+        ggplot2::theme_void() +
+        ggplot2::theme(
+            axis.line.x = ggplot2::element_line(linewidth = 2)
+        )
+    top_text <- (top_text_plot | patchwork::guide_area()) +
+        patchwork::plot_layout(
+            widths = c(7, 3)
+        )
     fig01 <- (
-        combined_plots$Overall /
+        top_text /
+            combined_plots$Overall /
             combined_plots$Gynaecology /
             combined_plots$`Upper GI` /
             combined_plots$`Lower GI` /
             combined_plots$Lung /
             combined_plots$RDC
+    ) + patchwork::plot_layout(
+        heights = c(0.5, 1, 1, 1, 1, 1, 1)
     ) & theme(plot.margin = margin(t = 0.5, r = 2, b = 0.5, l = 1, unit = "cm"))
     ggplot2::ggsave(
         here::here(stringr::str_glue("{output_dir}/fig01.png")),
         fig01,
         width = figure_width,
         height = figure_height,
-        dpi = 600
+        dpi = 300
     )
 
     evpi_data <- purrr::map_df(
