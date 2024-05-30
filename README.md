@@ -8,7 +8,5 @@ To reproduce all results in the `output` folder, please run:
 docker build -t cruzandkorthauer2024img .
 docker run -it -v ${PWD}:/home/rstudio/ \
     cruzandkorthauer2024img \
-    R -e "targets::tar_make()"
+    R -e "targets::tar_destroy(ask = FALSE); targets::tar_make()"
 ```
-
-> If [`targets`](https://docs.ropensci.org/targets/index.html) skips all steps, it means that no step in the pipeline needs to be re-run to fully reproduce the contents of `output`.
