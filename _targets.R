@@ -10,6 +10,8 @@ tar_option_set(
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
 
+dir.create(here::here("output"), showWarnings = FALSE, recursive = TRUE)
+
 # Target list:
 list(
   tar_target(
