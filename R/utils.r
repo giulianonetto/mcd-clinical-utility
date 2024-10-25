@@ -1,8 +1,8 @@
-process_extracted_data <- function(n, d, se, sp, name = NA_character_) {
+process_extracted_data <- function(n, d, se, sp, ppv, npv, name = NA_character_) {
     tp <- round(se * d)
     tn <- round(sp * (n - d))
     fn <- d - tp
-    fp <- (n - d) - tn
+    fp <- round((1 - ppv) * (se * d) / ppv)
     se_hat <- binom::binom.exact(tp, d)
     sp_hat <- binom::binom.exact(tn, n - d)
     ppv_hat <- binom::binom.exact(tp, tp + fp)
@@ -19,9 +19,11 @@ process_extracted_data <- function(n, d, se, sp, name = NA_character_) {
         sp_hat = round(sp_hat$mean * 100, 1),
         sp_lower = round(sp_hat$lower * 100, 1),
         sp_upper = round(sp_hat$upper * 100, 1),
+        ppv_reported = round(ppv * 100, 1),
         ppv_hat = round(ppv_hat$mean * 100, 1),
         ppv_lower = round(ppv_hat$lower * 100, 1),
         ppv_upper = round(ppv_hat$upper * 100, 1),
+        npv_reported = round(npv * 100, 1),
         npv_hat = round(npv_hat$mean * 100, 1),
         npv_lower = round(npv_hat$lower * 100, 1),
         npv_upper = round(npv_hat$upper * 100, 1)
