@@ -183,7 +183,10 @@ plot_evpi <- function(fit, .color, .label) {
             labels = list(mced_test = .label)
         ) +
             ggplot2::theme_bw(base_size = 24) +
-            ggplot2::theme(legend.position = c(.75, .85)) +
+            ggplot2::theme(
+                legend.position = "inside",
+                legend.position.inside = c(.75, .85)
+            ) +
             ggplot2::labs(subtitle = NULL, y = "Net true positives") +
             ggplot2::scale_y_continuous(
                 breaks = scales::pretty_breaks(10, min.n = 6),
