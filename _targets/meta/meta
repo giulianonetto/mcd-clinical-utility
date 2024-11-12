@@ -12,14 +12,14 @@ compute_nb_untreated|function|6979cb2b1ddafc26
 get_labels_values|function|43bc8f27f6d1053a
 compute_trade_off_positive|function|ec3de944d2a65da3
 run_estimating_optimal_cutoff|function|ca2b2a3034db1095
-create_final_figures|function|88a336d6b59e606b
+create_final_figures|function|94edda1ccf9ffa47
 plot_evpi|function|00fb61bdd50c4df6
 plot_net_benefit_untreated|function|175b485ff4616d30
 plot_trade_off_negative|function|777932d896ef76e7
 plot_net_benefit_treated|function|693c2248b7ed8b75
 plot_delta_treated|function|88c15fe5f7001384
 plot_trade_off_positive|function|7bf35ff26402c279
-run_symplify_pathways_dca|function|954965898e14cc01
-optimizing_mced_test|stem|59bbcc69f88ff3f5|331644a4065fa0f3|c0c93e682db90430|-1594383547||t20039.8614834981s|323d2a6f497b49a6|2734871|rds|local|vector|||10.992||
-pathways_dca_results|stem|b2d775d18f52e4e8|6c9b465734a4cb1f|028586c3c0c4f7ea|-1137654899||t20039.8619683007s|a1d6ca5c0c2596ab|56|rds|local|vector|||41.867|No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.|
-estimating_optimal_cutoff|stem|908b4b7c01c0e7a7|a0fee538b5362a92|9db12b06f526dfb9|-685766568||t20039.861985141s|765bddaff00a4898|102|rds|local|vector|||1.449|All aesthetics have length 1, but the data has 101 rows.ℹ Please consider using annotate or provide this layer with data containing  a single row.. All aesthetics have length 1, but the data has 101 rows.ℹ Please consider using annotate or provide this layer with data containing  a single row.|
+run_symplify_pathways_dca|function|67085486e551d032
+optimizing_mced_test|stem|59bbcc69f88ff3f5|331644a4065fa0f3|c0c93e682db90430|-1594383547||t20039.8658000676s|323d2a6f497b49a6|2734871|rds|local|vector|||11.102||
+pathways_dca_results|stem|b2d775d18f52e4e8|6c9b465734a4cb1f|3d710016b659365a|-1137654899||t20039.8662078334s|a1d6ca5c0c2596ab|56|rds|local|vector|||35.208|No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.. No shared levels found between namesvalues of the manual scale and thedatas fill values.|
+estimating_optimal_cutoff|stem|908b4b7c01c0e7a7|a0fee538b5362a92|9db12b06f526dfb9|-685766568||t20039.8662243959s|765bddaff00a4898|102|rds|local|vector|||1.416|All aesthetics have length 1, but the data has 101 rows.ℹ Please consider using annotate or provide this layer with data containing  a single row.. All aesthetics have length 1, but the data has 101 rows.ℹ Please consider using annotate or provide this layer with data containing  a single row.|

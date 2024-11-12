@@ -133,14 +133,14 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
         p_useful_all,
         here::here(stringr::str_glue("{output_dir}/p_useful.tsv"))
     )
-    readr::write_tsv(
-        trade_off_negative_all,
-        here::here(stringr::str_glue("{output_dir}/trade_off_negative.tsv"))
-    )
-    readr::write_tsv(
-        trade_off_positive_all,
-        here::here(stringr::str_glue("{output_dir}/trade_off_positive.tsv"))
-    )
+    # readr::write_tsv(
+    #     trade_off_negative_all,
+    #     here::here(stringr::str_glue("{output_dir}/trade_off_negative.tsv"))
+    # )
+    # readr::write_tsv(
+    #     trade_off_positive_all,
+    #     here::here(stringr::str_glue("{output_dir}/trade_off_positive.tsv"))
+    # )
     logger::log_info("Done!")
 
     logger::log_info("Creating final pathways figures")

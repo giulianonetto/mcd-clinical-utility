@@ -241,12 +241,12 @@ create_final_figures <- function(
         .colors = .colors
     )
 
-    ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/tradeoff.png")),
-        fig02,
-        width = 10.5,
-        height = 7.5
-    )
+    # ggplot2::ggsave(
+    #     here::here(stringr::str_glue("{output_dir}/tradeoff.png")),
+    #     fig02,
+    #     width = 10.5,
+    #     height = 7.5
+    # )
 
     tradeoff_positive <- combine_trade_off_positive_plots(
         pathways_dca_results = pathways_dca_results,
@@ -256,12 +256,12 @@ create_final_figures <- function(
         .colors = .colors
     )
 
-    ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/tradeoff_positive.png")),
-        tradeoff_positive,
-        width = 10.5,
-        height = 7.5
-    )
+    # ggplot2::ggsave(
+    #     here::here(stringr::str_glue("{output_dir}/tradeoff_positive.png")),
+    #     tradeoff_positive,
+    #     width = 10.5,
+    #     height = 7.5
+    # )
 
     a <- fig02 +
         ggplot2::ggtitle(NULL) +
@@ -271,10 +271,10 @@ create_final_figures <- function(
         )
     b <- tradeoff_positive + ggplot2::ggtitle(NULL) + ggplot2::guides(color = "none")
     both_tradeoffs <- (a | b) + patchwork::plot_annotation(tag_levels = c("A", "B"))
-    ggplot2::ggsave(
-        here::here(stringr::str_glue("{output_dir}/both_tradeoffs.png")),
-        both_tradeoffs,
-        width = 20,
-        height = 7
-    )
+    # ggplot2::ggsave(
+    #     here::here(stringr::str_glue("{output_dir}/both_tradeoffs.png")),
+    #     both_tradeoffs,
+    #     width = 20,
+    #     height = 7
+    # )
 }
