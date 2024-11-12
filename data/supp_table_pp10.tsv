@@ -1,4 +1,4 @@
-pathway	 Prevalence	 Sn	 Sn Ici	 Sn uci	 Sp	 Sp Ici	 Sp uci	 PPV	 PPV lci	 PPV uci	 NPV	 NPV Ici	 NPV uci
+pathway	 Prevalence	 Sn	 Sn lci	 Sn uci	 Sp	 Sp lci	 Sp uci	 PPV	 PPV lci	 PPV uci	 NPV	 NPV lci	 NPV uci
 Overall (368/5461)	6.7	66.3	61.2	71.1	98.4	98.1	98.8	75.5	70.5	80.1	97.6	97.1	98
 Gynaecology (53/1446)	3.7	49.1	35.1	63.2	98.3	97.4	98.9	52	37.4	66.3	98.1	97.2	98.7
 Lower Gl (143/2202)	6.5	68.5	60.2	76	99.1	98.6	99.4	83.8	75.8	89.9	97.8	97.1	98.4

@@ -1,8 +1,8 @@
-process_extracted_data <- function(n, d, se, sp, ppv, npv, name = NA_character_) {
+process_extracted_data <- function(n, d, se, sp, ppv, npv, neg = NA, use_ppv = TRUE, name = NA_character_) {
     tp <- round(se * d)
-    tn <- round(sp * (n - d))
+    tn <- ifelse(is.na(neg), round(sp * (n - d)), floor(npv * neg))
     fn <- d - tp
-    fp <- round((1 - ppv) * (se * d) / ppv)
+    fp <- ifelse(use_ppv, round((1 - ppv) * (se * d) / ppv), (n - d) - tn)
     se_hat <- binom::binom.exact(tp, d)
     sp_hat <- binom::binom.exact(tn, n - d)
     ppv_hat <- binom::binom.exact(tp, tp + fp)
@@ -29,6 +29,123 @@ process_extracted_data <- function(n, d, se, sp, ppv, npv, name = NA_character_)
         npv_upper = round(npv_hat$upper * 100, 1)
     )
     return(out)
+}
+
+check_extracted_data <- function(extracted_data, supp_table_from_pp_10) {
+    supp_table <- read_tsv(supp_table_from_pp_10, show_col_types = FALSE)
+    rlang::inform("Checking extracted sensitivity")
+    non_matching_point_estimates_sn <- extracted_data$se_hat != supp_table$Sn
+    if (any(non_matching_point_estimates_sn)) {
+        rlang::abort(
+            paste0(
+                "\tPoint estimates do not match for pathways: ",
+                extracted_data$pathway[non_matching_point_estimates_sn]
+            )
+        )
+    }
+    non_matching_lower_bounds_sn <- extracted_data$se_lower != supp_table$`Sn lci`
+    if (any(non_matching_lower_bounds_sn)) {
+        rlang::abort(
+            paste0(
+                "\tLower bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_lower_bounds_sn]
+            )
+        )
+    }
+    non_matching_upper_bounds_sn <- extracted_data$se_upper != supp_table$`Sn uci`
+    if (any(non_matching_upper_bounds_sn)) {
+        rlang::abort(
+            paste0(
+                "\tUpper bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_upper_bounds_sn]
+            )
+        )
+    }
+    rlang::inform("Checking extracted specificity")
+    non_matching_point_estimates_sp <- extracted_data$sp_hat != supp_table$Sp
+    if (any(non_matching_point_estimates_sp)) {
+        rlang::abort(
+            paste0(
+                "\tPoint estimates do not match for pathways: ",
+                extracted_data$pathway[non_matching_point_estimates_sp]
+            )
+        )
+    }
+    non_matching_lower_bounds_sp <- extracted_data$sp_lower != supp_table$`Sp lci`
+    if (any(non_matching_lower_bounds_sp)) {
+        rlang::abort(
+            paste0(
+                "\tLower bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_lower_bounds_sp]
+            )
+        )
+    }
+    non_matching_upper_bounds_sp <- extracted_data$sp_upper != supp_table$`Sp uci`
+    if (any(non_matching_upper_bounds_sp)) {
+        rlang::abort(
+            paste0(
+                "\tUpper bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_upper_bounds_sp]
+            )
+        )
+    }
+    rlang::inform("Checking extracted PPV")
+    non_matching_point_estimates_ppv <- extracted_data$ppv_hat != supp_table$PPV
+    if (any(non_matching_point_estimates_ppv)) {
+        rlang::abort(
+            paste0(
+                "\tPoint estimates do not match for pathways: ",
+                extracted_data$pathway[non_matching_point_estimates_ppv]
+            )
+        )
+    }
+    non_matching_lower_bounds_ppv <- extracted_data$ppv_lower != supp_table$`PPV lci`
+    if (any(non_matching_lower_bounds_ppv)) {
+        rlang::abort(
+            paste0(
+                "\tLower bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_lower_bounds_ppv]
+            )
+        )
+    }
+    non_matching_upper_bounds_ppv <- extracted_data$ppv_upper != supp_table$`PPV uci`
+    if (any(non_matching_upper_bounds_ppv)) {
+        rlang::abort(
+            paste0(
+                "\tUpper bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_upper_bounds_ppv]
+            )
+        )
+    }
+    rlang::inform("Checking extracted NPV")
+    non_matching_point_estimates_npv <- extracted_data$npv_hat != supp_table$NPV
+    if (any(non_matching_point_estimates_npv)) {
+        rlang::abort(
+            paste0(
+                "\tPoint estimates do not match for pathways: ",
+                extracted_data$pathway[non_matching_point_estimates_npv]
+            )
+        )
+    }
+    non_matching_lower_bounds_npv <- extracted_data$npv_lower != supp_table$`NPV lci`
+    if (any(non_matching_lower_bounds_npv)) {
+        rlang::abort(
+            paste0(
+                "\tLower bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_lower_bounds_npv]
+            )
+        )
+    }
+    non_matching_upper_bounds_npv <- extracted_data$npv_upper != supp_table$`NPV uci`
+    if (any(non_matching_upper_bounds_npv)) {
+        rlang::abort(
+            paste0(
+                "\tUpper bounds do not match for pathways: ",
+                extracted_data$pathway[non_matching_upper_bounds_npv]
+            )
+        )
+    }
+    rlang::inform("All checks passed!")
 }
 
 generate_data_from_counts <- function(n, d, tp, tn, fp, fn) {

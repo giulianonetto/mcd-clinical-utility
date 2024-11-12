@@ -10,4 +10,4 @@ RUN echo "PS1='\[\e[1;38;2;231;41;138m\]${VIRTUAL_ENV:+[$(basename -- $VIRTUAL_E
 RUN R -e "devtools::install_version('ggnewscale', version = '0.4.10', dependencies = T)"
 RUN R -e "devtools::install_version('igraph', version = '2.0.3', dependencies = T)"
 RUN R -e "devtools::install_version('cli', version = '3.6.2', dependencies = T)"
-RUN R -e "devtools::install_version('targets', version = '1.7.0', dependencies = T)"
+RUN R -e "devtools::install_version('targets', version = '1.8.0', dependencies = T)"

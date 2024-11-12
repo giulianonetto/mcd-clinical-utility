@@ -52,3 +52,4 @@ rsconnect/
 .local
 .config
 *tmp*
+*_bkp

@@ -8,11 +8,19 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
             process_extracted_data(
                 n = x$N, d = x$D,
                 se = x$se, sp = x$sp,
-                name = x$pathway
+                ppv = x$ppv, npv = x$npv,
+                neg = ifelse(x$pathway == "Overall", x$N - 323, NA),
+                name = x$pathway,
+                use_ppv = FALSE
             )
         }
     ) %>%
         dplyr::rename(pathway := name)
+
+    check_extracted_data(
+        extracted_data,
+        supp_table_from_pp_10 = here::here("data/supp_table_pp10.tsv")
+    )
 
     readr::write_tsv(
         extracted_data %>% dplyr::select(
@@ -24,6 +32,11 @@ run_symplify_pathways_dca <- function(symplify_pathways_data, output_dir, n_draw
             negative_predictive_value := npv_hat
         ),
         here::here(stringr::str_glue("{output_dir}/supp_table_01.tsv"))
+    )
+
+    readr::write_tsv(
+        extracted_data,
+        here::here(stringr::str_glue("{output_dir}/extracted_data.tsv"))
     )
 
     .colors <- c(
@@ -328,7 +341,7 @@ run_estimating_optimal_cutoff <- function(output_dir, seed = 1234567) {
                 ggplot2::geom_point(
                     ggplot2::aes(
                         x = preds[which.max(ntn)], y = max(ntn),
-                        color = "updated"
+                        color = "optimized"
                     ),
                     size = 6
                 ) +
@@ -370,18 +383,19 @@ run_estimating_optimal_cutoff <- function(output_dir, seed = 1234567) {
                 ggplot2::scale_color_manual(
                     values = c(
                         current = "#0077ff",
-                        updated = "#ff2424"
+                        optimized = "#ff2424"
                     )
                 ) +
                 ggplot2::geom_hline(yintercept = 0, linetype = 2) +
                 ggplot2::theme_classic(base_size = 20) +
                 ggplot2::theme(
-                    legend.position = c(.9, .8)
+                    legend.position = c(.9, .8),
+                    axis.text.x = ggplot2::element_blank()
                 ) +
                 ggplot2::labs(
-                    x = "Predicted score",
+                    x = "Predicted score (arbitrary units)",
                     y = "Net true negatives per 100K",
-                    title = "Hypothetical example of classifier cutoff updating",
+                    title = "Hypothetical example of classifier cutoff optimization",
                     subtitle = "Unnecessary referrals avoided by predicted score cutoff", ,
                     color = "Cutoff"
                 ) +

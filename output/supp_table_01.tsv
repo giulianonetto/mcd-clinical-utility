@@ -1,5 +1,5 @@
 pathway	n	d	tp	tn	fn	fp	prevalence	sensitivity	specificity	positive_predictive_value	negative_predictive_value
-Overall	5461	368	244	5012	124	81	6.7	66.3	98.4	75.1	97.6
+Overall	5461	368	244	5014	124	79	6.7	66.3	98.4	75.5	97.6
 Gynaecology	1446	53	26	1369	27	24	3.7	49.1	98.3	52	98.1
 Lower GI	2202	143	98	2040	45	19	6.5	68.5	99.1	83.8	97.8
 Lung	299	89	63	202	26	8	29.8	70.8	96.2	88.7	88.6

@@ -200,7 +200,7 @@ create_final_figures <- function(
         ggplot2::theme(
             plot.title = column_title_config,
             plot.subtitle = ggplot2::element_text(hjust = 0, size = column_title_config$size * 0.8),
-            legend.position = c(.8, .75),
+            legend.position = "inside", legend.position.inside = c(.8, .75),
             panel.grid = ggplot2::element_blank(),
             legend.key.height = ggplot2::unit(0.75, "cm")
         ) +
@@ -266,7 +266,7 @@ create_final_figures <- function(
     a <- fig02 +
         ggplot2::ggtitle(NULL) +
         ggplot2::theme(
-            legend.position = c(0.16, 0.74),
+            legend.position = "inside", legend.position.inside = c(0.16, 0.74),
             legend.key.height = ggplot2::unit(0.8, "cm")
         )
     b <- tradeoff_positive + ggplot2::ggtitle(NULL) + ggplot2::guides(color = "none")

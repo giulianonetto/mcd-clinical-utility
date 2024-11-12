@@ -36,7 +36,8 @@ plot_net_benefit_treated <- function(fit, .color, .label, .pathway) {
     p <- bayesDCA:::plot.BayesDCA(fit) +
         ggplot2::theme_bw(base_size = 24) +
         ggplot2::theme(
-            legend.position = legend_position,
+            legend.position = "inside",
+            legend.position.inside = legend_position,
             legend.background = ggplot2::element_rect(fill = "transparent"),
             legend.key = ggplot2::element_rect(fill = "transparent"),
             legend.key.width = ggplot2::unit(2.5, "lines"),
@@ -71,7 +72,7 @@ plot_delta_treated <- function(fit, .color, .label) {
     label_values <- get_labels_values(.label = .label)
     p <- bayesDCA:::plot_delta(fit) +
         ggplot2::theme_bw(base_size = 24) +
-        ggplot2::theme(legend.position = c(.25, .9)) +
+        ggplot2::theme(legend.position = "inside", legend.position.inside = c(.25, .9)) +
         ggplot2::scale_color_manual(values = color_values, labels = label_values) +
         ggplot2::scale_fill_manual(values = color_values, labels = label_values) +
         ggplot2::scale_x_continuous(
@@ -144,7 +145,7 @@ plot_net_benefit_untreated <- function(fit, .color, .label) {
             labels = scales::label_number(big.mark = ",")
         ) +
         ggplot2::theme_bw(base_size = 24) +
-        ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::theme(legend.position = "inside", legend.position.inside = c(.15, .85)) +
         ggplot2::labs(
             x = "Decision threshold",
             y = stringr::str_glue(
@@ -233,7 +234,7 @@ plot_trade_off_negative <- function(fit, .color, .label, max_abs_value = NULL, m
         ggplot2::geom_line(linewidth = 1.5, ggplot2::aes(color = .label)) +
         ggplot2::coord_cartesian(ylim = c(-0.01, max_abs_value)) +
         ggplot2::theme_bw(base_size = 24) +
-        ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::theme(legend.position = "inside", legend.position.inside = c(.15, .85)) +
         ggplot2::labs(
             x = "Decision threshold",
             y = "# tests",
@@ -307,7 +308,7 @@ combine_trade_off_negative_plots <- function(
             alpha = 0.5
         ) +
         ggplot2::theme_bw(base_size = 24) +
-        # ggplot2::theme(legend.position = c(.15, .85)) +
+        # ggplot2::theme(legend.position = "inside", legend.position.inside = c(.15, .85)) +
         ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
         ggplot2::scale_y_continuous(
             breaks = scales::pretty_breaks(10)
@@ -354,7 +355,7 @@ plot_trade_off_positive <- function(fit, .color, .label, max_abs_value = NULL, m
         ggplot2::geom_line(linewidth = 1.5, ggplot2::aes(color = .label)) +
         ggplot2::coord_cartesian(ylim = c(-0.01, max_abs_value)) +
         ggplot2::theme_bw(base_size = 24) +
-        ggplot2::theme(legend.position = c(.15, .85)) +
+        ggplot2::theme(legend.position = "inside", legend.position.inside = c(.15, .85)) +
         ggplot2::labs(
             x = "Decision threshold",
             y = "# tests per net true positive",
@@ -435,7 +436,7 @@ combine_trade_off_positive_plots <- function(
             alpha = 0.5
         ) +
         ggplot2::theme_bw(base_size = 24) +
-        # ggplot2::theme(legend.position = c(.15, .85)) +
+        # ggplot2::theme(legend.position = "inside", legend.position.inside = c(.15, .85)) +
         ggplot2::coord_cartesian(ylim = c(-0.01, NA)) +
         ggplot2::scale_y_continuous(
             breaks = scales::pretty_breaks(10)
