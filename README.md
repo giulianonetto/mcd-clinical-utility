@@ -1,5 +1,7 @@
 # Clinical utility of multi-cancer detection in symptomatic patients: a decision-making perspective
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15421219.svg)](https://doi.org/10.5281/zenodo.15421219)
+
 This repository assesses the clinical utility of the Galleri test for multi-cancer detection in symptomatic patients referred for cancer investigation, using data from the [SYMPLIFY cohort study](https://doi.org/10.1016/S1470-2045(23)00277-2).
 
 To reproduce all results in the `output` folder, please run:
